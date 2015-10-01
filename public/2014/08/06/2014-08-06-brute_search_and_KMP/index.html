@@ -1,0 +1,597 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>子字符串查找——暴力查找与KMP算法 | yutian&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="雨天">
+    
+
+    
+    <meta name="description" content="在这篇文章里，主要分析子字符串查找的两种算法：暴力查找和KMP算法。
+1.暴力查找子字符串查找最简单的方法就是在需要查找的字符串(text)中模式(pattern)可能出现匹配的任何地方检查匹配是否存在。代码如下：1234567891011121314public static int search(String pat, String text) &amp;#123;	int M = pat.lengt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="子字符串查找——暴力查找与KMP算法">
+<meta property="og:url" content="http://yutianx.info/2014/08/06/2014-08-06-brute_search_and_KMP/index.html">
+<meta property="og:site_name" content="yutian's blog">
+<meta property="og:description" content="在这篇文章里，主要分析子字符串查找的两种算法：暴力查找和KMP算法。
+1.暴力查找子字符串查找最简单的方法就是在需要查找的字符串(text)中模式(pattern)可能出现匹配的任何地方检查匹配是否存在。代码如下：1234567891011121314public static int search(String pat, String text) &amp;#123;	int M = pat.lengt">
+<meta property="og:image" content="/img/kmp-1.png">
+<meta property="og:image" content="/img/kmp-2.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="子字符串查找——暴力查找与KMP算法">
+<meta name="twitter:description" content="在这篇文章里，主要分析子字符串查找的两种算法：暴力查找和KMP算法。
+1.暴力查找子字符串查找最简单的方法就是在需要查找的字符串(text)中模式(pattern)可能出现匹配的任何地方检查匹配是否存在。代码如下：1234567891011121314public static int search(String pat, String text) &amp;#123;	int M = pat.lengt">
+
+    
+    <link rel="alternative" href="/atom.xml" title="yutian&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/logo.svg">
+    <link rel="apple-touch-icon-precomposed" href="/img/logo.svg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="yutian&#39;s blog" title="yutian&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="yutian&#39;s blog">yutian&#39;s blog</a></h1>
+				<h2 class="blog-motto">stay hungry, stay foolish</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yutianx.info">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/08/06/2014-08-06-brute_search_and_KMP/" title="子字符串查找——暴力查找与KMP算法" itemprop="url">子字符串查找——暴力查找与KMP算法</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="雨天" target="_blank" itemprop="author">雨天</a>
+		
+  <p class="article-time">
+    <time datetime="2014-08-06T06:03:20.000Z" itemprop="datePublished"> 发表于 2014-08-06</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-暴力查找"><span class="toc-number">1.</span> <span class="toc-text">1.暴力查找</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-KMP算法"><span class="toc-number">2.</span> <span class="toc-text">2.KMP算法</span></a></li></ol>
+		
+		</div>
+		
+		<p>在这篇文章里，主要分析子字符串查找的两种算法：暴力查找和KMP算法。</p>
+<h3 id="1-暴力查找">1.暴力查找</h3><p>子字符串查找最简单的方法就是在需要查找的字符串(text)中模式(pattern)可能出现匹配的任何地方检查匹配是否存在。代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">search</span><span class="params">(String pat, String text)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> M = pat.length();</span><br><span class="line">	<span class="keyword">int</span> N = text.length();</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= N - M; i++) &#123;</span><br><span class="line">		<span class="keyword">int</span> j;</span><br><span class="line">		<span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; M; j++) &#123;</span><br><span class="line">			<span class="keyword">if</span> (text.charAt(i) ！= pat.charAt(j))</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (j == M) </span><br><span class="line">			<span class="keyword">return</span> i;	<span class="comment">//找到匹配</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> -<span class="number">1</span>;		<span class="comment">//没找到匹配，返回-1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在程序中，我们使用了一个指针<code>i</code>来跟踪文本，一个指针<code>j</code>来跟踪模式。对每一个可能的<code>i(i&lt;=M-N)</code>,将文本和模式进行匹配，如果模式的字符和文本的字符匹配，则将指针<code>j</code>加<code>1</code>。如果最后指针<code>j</code>为<code>M</code>，那么说明在位置<code>i</code>上文本和字符串是匹配的，返回位置<code>i</code>。否则返回<code>-1</code>，说明没有找到匹配。</p>
+<p>这种朴素的查找方法思路简单，也很容易实现，但是时间复杂度高，最坏情况下，时间复杂度约为<code>MN</code>,所以我们想追求速度更快的子字符窜查找算法。</p>
+<p>在暴力查找算法中，在每个位置<code>i</code>上，如果模式没有匹配，我们就直接把指针<code>i</code>回溯到<code>i+1</code>,在这种情况下，我们会浪费掉我们已经匹配过的<code>j</code>个字符的信息，所以，KMP算法就是通过利用这几个字符串的信息，减少指针<code>i</code>的回溯，而达到查找的时间复杂度为<code>O(N)</code>的目的的。</p>
+<h3 id="2-KMP算法">2.KMP算法</h3><p>KMP算法是Knuth-Morris-Pratt算法的缩写。</p>
+<p><em>在学习这个算法时，我是先看的《Algorithms》，但是上面讲的不是很容易懂，所以又看了《算法导论》，才把它看明白，所以以下都是基于算导，而且图也是直接截的算导的图。</em></p>
+<p>在说KMP算法之前，我们先约定两个定义：</p>
+<blockquote>
+<p>1.如果对某个字符串<code>y</code>有<code>x=ωy</code>，则称字符串<code>ω</code>是<code>x</code>的前缀,记为<code>w&lt;x</code></p>
+<p>2.如果对某个字符串<code>y</code>有<code>x=yω</code>，则称字符串<code>ω</code>是<code>x</code>的后缀,记为<code>w&gt;x</code></p>
+</blockquote>
+<p>现在我们来看怎么利用一次失败的匹配中的<code>j</code>个已知字符。</p>
+<p>如图一中<code>(a)</code>所示，在这次匹配中，模式<code>P</code>相对于文本<code>T</code>的偏移量为<code>s</code>，在模式的<code>q+1</code>位置处，匹配失败。如果按照暴力查找中的思路，我们会将文本<code>T</code>的指针指向<code>s+1</code>处，但是我们观察模式<code>P</code>,我们会发现不需要把文本的指针回退<code>q</code>，如<code>(b)</code>所示，我们只要将指针回退到<code>s&#39;=s+2</code>。</p>
+<p>接下来我们要找出指针回退的规律，同时我们用一个辅助数组<code>π[1..m]</code>,其中<code>m</code>为模式长度,并且约定如下：</p>
+<blockquote>
+<p>已知一个模式<code>P[1..m]</code>,模式<code>P</code>的前缀函数是函数<code>π:{1,2,...,m}→{0,1，...,m}</code>，满足<code>π[q]=max{k:k&lt;q,且Pk为Pq的后缀}</code></p>
+<p>简单点说就是假设<code>Pk</code>是<code>Pq</code>的一个前缀，那么<code>π[q]</code>为同时为<code>Pq</code>的前缀和缀的Pk的最长长度，例如模式<code>ABAB</code>,那么<code>AB</code>既是模式的前缀，同时也是模式的后缀，而且我们也找不出另外一个更长模式的子字符串既是模式的前缀又是模式的后缀。所以<code>π[4]=2</code>(因为必须是<code>Pk</code>必须是<code>Pq</code>的子字符串)。</p>
+</blockquote>
+<p>所以假设我们已经知道了前缀数组<code>π</code>，那么我们就可以根据当前的<code>q</code>值知道下一个可能的有效偏移<code>s&#39;</code>。如图中<code>(b)</code>所示，<code>π[5]=3</code>，而<code>P3</code>既是<code>P5</code>的前缀同时也是<code>T[s+1..s+5]</code>的后缀(因为<code>P[1..5]</code>和<code>T[s+1..s+5]</code>匹配),所以我们可以知道下一个可能的有效偏移为<code>s&#39;=s+(q-π[q])=s+(5-3)=s+2</code>。</p>
+<p><img src="/img/kmp-1.png" alt="kmp1"><br>图一</p>
+<p>图二中，我们可以看到关于模式<code>ababaca</code>的完整前缀函数<code>π</code>：</p>
+<p><img src="/img/kmp-2.png" alt="kmp1"><br>图二</p>
+<p>在图二中，我们能看到一个<code>π*</code>数组，我们也给它一个定义</p>
+<blockquote>
+<p>设P是长度为<code>m</code>的模式，其前缀函数为<code>π</code>，对<code>q=1,2..m</code>,有<code>π*[q]={k: k&lt;q且Pk为Pq的前缀}</code>。例如图二中<code>π*[5]={3,1,0}</code>。</p>
+</blockquote>
+<p>关于<code>π*</code>数组，我们还有一条性质在求<code>π</code>的时候能够用到</p>
+<blockquote>
+<p>若x=max{k∈π*[q-1], 且P[q+1]=P[x+1]},那么π[q]=k+1，否则π[q]=0</p>
+<p>其实这很好理解，如果我们能够在π*[q-1]数组中找到这么一个最大的x，使得 P[q+1]=P[x+1],那么π[q]=k+1。如果我们找不到这么一个x，那么π[q]=0</p>
+</blockquote>
+<p>那么现在的问题是怎么求前缀数组呢，我们先给出算导上的伪代码：</p>
+<figure class="highlight julia"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Compute-prefix-<span class="keyword">function</span>(P)</span><br><span class="line"><span class="number">1</span> 	m = P.length</span><br><span class="line"><span class="number">2</span> 	<span class="keyword">let</span> <span class="literal">π</span>[<span class="number">1.</span>.m] be a new array</span><br><span class="line"><span class="number">3</span> 	<span class="literal">π</span>[<span class="number">1</span>] = <span class="number">0</span></span><br><span class="line"><span class="number">4</span> 	k = <span class="number">0</span></span><br><span class="line"><span class="number">5</span> 	<span class="keyword">for</span> q=<span class="number">2</span> to m</span><br><span class="line"><span class="number">6</span> 		<span class="keyword">while</span> k&gt;<span class="number">0</span> and P[k+<span class="number">1</span>] != P[q]</span><br><span class="line"><span class="number">7</span>			k=<span class="literal">π</span>[k]</span><br><span class="line"><span class="number">8</span>		<span class="keyword">if</span> P[k+<span class="number">1</span>] == P[q]</span><br><span class="line"><span class="number">9</span> 			k=k+<span class="number">1</span></span><br><span class="line"><span class="number">10</span>		<span class="literal">π</span>[q] = k</span><br><span class="line"><span class="number">11</span>	<span class="keyword">return</span> <span class="literal">π</span></span><br></pre></td></tr></table></figure>
+<p>我们接下来一行行分析</p>
+<blockquote>
+<p>1~2行： 对数组进行初始化</p>
+<p>3~4行： 我们可以知道<code>π[1]=0</code>,同时我们令<code>k=π[q-1]=0</code>,这与循环结束后的条件保持一致</p>
+<p>6~7行： 这里我们就是在π*[q-1]数组中寻找这么一个k值，使得P[k+1]=P[q],如果我们找到了这么一个k或者k为零，结束循环</p>
+<p>8~9行：如果我们在上两行找到的k值满足P[k+1]=P[q]，那说明我们找到了这么一个k值，那么π[q]=k+1；如果不满足条件，那说明k=0，而且P[1]!=P[q]，则π[q]=0</p>
+</blockquote>
+<p>到这里，我们就完成了前缀数组的计算。然后我们给出主程序的伪代码：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">KMP-Matcher</span><span class="params">(T, p)</span></span></span><br><span class="line"><span class="number">1</span>	n=T<span class="class">.length</span></span><br><span class="line"><span class="number">2</span>	m=P<span class="class">.length</span></span><br><span class="line"><span class="number">3</span>	π=<span class="function"><span class="title">Compute-prefix-function</span><span class="params">(P)</span></span>		</span><br><span class="line"><span class="number">4</span>	q=<span class="number">0</span>										<span class="comment">//number of characters matched</span></span><br><span class="line"><span class="number">5</span> 	<span class="keyword">for</span> i=<span class="number">1</span> to n							<span class="comment">//scan the text from left to right</span></span><br><span class="line"><span class="number">6</span>		while q&gt;<span class="number">0</span> and P[q+<span class="number">1</span>]!=T[i]</span><br><span class="line"><span class="number">7</span>			q=π[q]							<span class="comment">//next character does not match</span></span><br><span class="line"><span class="number">8</span>		<span class="keyword">if</span> P[q+<span class="number">1</span>]==T[i]</span><br><span class="line"><span class="number">9</span>			q=q+<span class="number">1</span>							<span class="comment">//next character matches	</span></span><br><span class="line"><span class="number">10</span>		<span class="keyword">if</span> q==m								<span class="comment">//is all of P matched?			</span></span><br><span class="line"><span class="number">11</span>			print <span class="string">"Pattern occurs with shift"</span> i-m	</span><br><span class="line"><span class="number">12</span> 			q=π[q]							<span class="comment">//look for the next match</span></span><br></pre></td></tr></table></figure>
+<p>啦啦啦,KMP算法就这样啦，主要参考的是《algorithms》和《算法导论》,在第一本书中将的不如算导中好（个人感觉），所以推荐看算导。</p>
+<p>最后附上Java实现代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KMP</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String pat;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] pi;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">KMP</span><span class="params">(String pat)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.pat = pat;</span><br><span class="line">        <span class="keyword">int</span> M = pat.length();</span><br><span class="line">        pi = <span class="keyword">new</span> <span class="keyword">int</span>[M];</span><br><span class="line"></span><br><span class="line">        pi[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> k = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; M; i++) &#123;</span><br><span class="line">            <span class="keyword">while</span> (k &gt; <span class="number">0</span> &amp;&amp; pat.charAt(k) != pat.charAt(i))</span><br><span class="line">                k = pi[k-<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (pat.charAt(k) == pat.charAt(i))</span><br><span class="line">                k = k + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">            pi[i] = k;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">search</span><span class="params">(String txt)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> N = txt.length();</span><br><span class="line">        <span class="keyword">int</span> M = pat.length();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> q = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">            <span class="keyword">while</span> (q &gt; <span class="number">0</span> &amp;&amp; pat.charAt(q) != txt.charAt(i))</span><br><span class="line">                q = pi[q-<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (pat.charAt(q) == txt.charAt(i))</span><br><span class="line">               q = q + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (q == M) &#123;</span><br><span class="line">                System.out.println(<span class="string">"pattern occurs with shift "</span> + (i - M + <span class="number">1</span>));</span><br><span class="line">                q = pi[q-<span class="number">1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String pat = <span class="string">"ab"</span>;</span><br><span class="line">        String txt = <span class="string">"ababc"</span>;</span><br><span class="line">        KMP kmp = <span class="keyword">new</span> KMP(pat);</span><br><span class="line">        kmp.search(txt);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/algorithms/">algorithms</a>
+</div>
+
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yutianx.info/2014/08/06/2014-08-06-brute_search_and_KMP/" data-title="子字符串查找——暴力查找与KMP算法 | yutian&#39;s blog" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/08/11/2014-08-11-trie/" title="单词查找树(Tries)">
+  <strong>上一篇：</strong><br/>
+  <span>
+  单词查找树(Tries)</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/08/04/2014-08-04-ubuntu-rsyslog/"  title="Ubuntu 12.04 配置两级Rsyslog">
+ <strong>下一篇：</strong><br/> 
+ <span>Ubuntu 12.04 配置两级Rsyslog
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2014/08/06/2014-08-06-brute_search_and_KMP/" data-title="子字符串查找——暴力查找与KMP算法" data-url="http://yutianx.info/2014/08/06/2014-08-06-brute_search_and_KMP/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-暴力查找"><span class="toc-number">1.</span> <span class="toc-text">1.暴力查找</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-KMP算法"><span class="toc-number">2.</span> <span class="toc-text">2.KMP算法</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/LeetCode/" title="LeetCode">LeetCode<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/algorithms/" title="algorithms">algorithms<sup>22</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/cpp/" title="cpp">cpp<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/docker/" title="docker">docker<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/golang/" title="golang">golang<sup>4</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/linux/" title="linux">linux<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/problems/" title="problems">problems<sup>21</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/操作系统/" title="操作系统">操作系统<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/动态规划/" title="动态规划">动态规划<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/二叉树/" title="二叉树">二叉树<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/图/" title="图">图<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/二分搜索/" title="二分搜索">二分搜索<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://1mhz.me" target="_blank" title="1mhz">1mhz</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m Zhenxing Wu in BUPT. <br/>
+			This is my blog.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		<a href="https://github.com/yutianwu" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:wzxingbupt@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="雨天">雨天</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"雨天byr"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-53478698-1', 'yutianx.info');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

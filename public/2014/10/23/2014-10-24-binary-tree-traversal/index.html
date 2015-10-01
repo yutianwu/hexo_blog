@@ -1,0 +1,556 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>二叉树的普通非递归遍历 | yutian&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="雨天">
+    
+
+    
+    <meta name="description" content="这里给出二叉树的普通非递归遍历：
+123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二叉树的普通非递归遍历">
+<meta property="og:url" content="http://yutianx.info/2014/10/23/2014-10-24-binary-tree-traversal/index.html">
+<meta property="og:site_name" content="yutian's blog">
+<meta property="og:description" content="这里给出二叉树的普通非递归遍历：
+123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="二叉树的普通非递归遍历">
+<meta name="twitter:description" content="这里给出二叉树的普通非递归遍历：
+123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596">
+
+    
+    <link rel="alternative" href="/atom.xml" title="yutian&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/logo.svg">
+    <link rel="apple-touch-icon-precomposed" href="/img/logo.svg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="yutian&#39;s blog" title="yutian&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="yutian&#39;s blog">yutian&#39;s blog</a></h1>
+				<h2 class="blog-motto">stay hungry, stay foolish</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yutianx.info">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/10/23/2014-10-24-binary-tree-traversal/" title="二叉树的普通非递归遍历" itemprop="url">二叉树的普通非递归遍历</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="雨天" target="_blank" itemprop="author">雨天</a>
+		
+  <p class="article-time">
+    <time datetime="2014-10-23T13:16:20.000Z" itemprop="datePublished"> 发表于 2014-10-23</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			
+		
+		</div>
+		
+		<p>这里给出二叉树的普通非递归遍历：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt;</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;queue&gt;</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;stack&gt;</span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//二叉树的节点</span></span><br><span class="line"><span class="keyword">struct</span> Node &#123;</span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    Node *lch, *rch;</span><br><span class="line">    Node(<span class="keyword">int</span> x):val(x), lch(NULL), rch(NULL) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//前序遍历</span></span><br><span class="line"><span class="comment">/*</span><br><span class="line"> 前序遍历就是先访问当前节点，然后依次访问左子结点，右子节点</span><br><span class="line"> 所以很简单，我们就直接用一个栈先压入右子节点，然后压入左子结点就可以了</span><br><span class="line"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">preorderTraversal</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">stack</span>&lt;Node *&gt; s;</span><br><span class="line">    Node *cur;          <span class="comment">//当前访问节点</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (root != NULL)   <span class="comment">//如果根节点不为空，压栈</span></span><br><span class="line">        s.push(root);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (!s.empty()) &#123;    <span class="comment">//如果栈不为空</span></span><br><span class="line">        cur = s.top();      <span class="comment">//输出当前访问节点</span></span><br><span class="line">        s.pop();</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;cur-&gt;val;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//依次将右子节点，左子结点压栈</span></span><br><span class="line">        <span class="keyword">if</span> (cur-&gt;rch != NULL)</span><br><span class="line">            s.push(cur-&gt;rch);</span><br><span class="line">        <span class="keyword">if</span> (cur-&gt;lch != NULL)</span><br><span class="line">            s.push(cur-&gt;lch);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//后序遍历的非递归实现</span></span><br><span class="line"><span class="comment">/*</span><br><span class="line"> 后序遍历就是先访问节点的左子结点和右子节点，再访问当前节点</span><br><span class="line"> 如果不用递归，我们就可以用栈，我们可以依次将当前节点、右子节点和左子结点入栈，</span><br><span class="line"> 然后再弹栈</span><br><span class="line"> 但是这里又有另一个问题，如果我们访问到了一个节点，可是我们不知道到底是应该将它的两个子节点</span><br><span class="line"> 压栈还是该将它弹出。因此就需要一个辅助的节点来记录上一个弹出的节点，如果被弹出的上一个节点</span><br><span class="line"> 是它的一个子节点，那么说明前面已经将该节点的子节点压栈了，现在该将它弹出。问题就解决了。</span><br><span class="line"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">postorderTraversal</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">stack</span>&lt;Node *&gt; s;</span><br><span class="line">    Node *pre = NULL;   <span class="comment">//已经输出过的前一个节点</span></span><br><span class="line">    Node *cur = NULL;   <span class="comment">//当前访问的节点</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (root != NULL)</span><br><span class="line">        s.push(root);       <span class="comment">//首先将根节点压栈</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (!s.empty()) &#123;</span><br><span class="line">        cur = s.top();  <span class="comment">//获取栈顶的节点</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> ((cur-&gt;lch == NULL &amp;&amp; cur-&gt;rch == NULL) ||</span><br><span class="line">            (pre != NULL &amp;&amp; (cur-&gt;lch == pre || cur-&gt;rch == pre))) &#123;</span><br><span class="line">            <span class="comment">//如果当前的节点既没有左子结点又没有右子节点</span></span><br><span class="line">            <span class="comment">//或者当前节点的子节点已经被输出过，即已经是第二次经过该节点了</span></span><br><span class="line">            <span class="comment">//输出当前节点，并且将当前节点赋给pre</span></span><br><span class="line">            <span class="built_in">cout</span>&lt;&lt;cur-&gt;val;</span><br><span class="line">            s.pop();</span><br><span class="line">            pre = cur;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//依次将右子节点和左子结点入栈</span></span><br><span class="line">            <span class="keyword">if</span> (cur-&gt;rch != NULL)</span><br><span class="line">                s.push(cur-&gt;rch);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (cur-&gt;lch != NULL)</span><br><span class="line">                s.push(cur-&gt;lch);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//中序遍历</span></span><br><span class="line"><span class="comment">/*</span><br><span class="line"> 中序遍历不能像后序遍历一样记录前一个访问的节点，因为前一个访问的节点并不是要访问的节点的</span><br><span class="line"> 直接子节点，所以又得换种方法：</span><br><span class="line"> 我们用一个节点记录当前访问的节点，然后用一个栈记录上一个访问过的节点。如果当前的节点不为空，</span><br><span class="line"> 那么向下访问左子结点。</span><br><span class="line"> 如果当前访问的节点为空，说明上一个访问的节点已经没有左子结点了，那么输出上一个节点，</span><br><span class="line"> 然后访问上一个节点的右子节点。</span><br><span class="line"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">inorderTraversal</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">stack</span>&lt;Node *&gt; s;</span><br><span class="line">    Node *cur = root;       <span class="comment">//当前访问节点</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (!s.empty() || cur != NULL) &#123; <span class="comment">//如果当前访问节点与栈都不为空</span></span><br><span class="line">        <span class="keyword">if</span> (cur != NULL) &#123;</span><br><span class="line">            <span class="comment">//如果当前节点不为空，那么继续往下访问左子结点，并将当前节点压栈</span></span><br><span class="line">            s.push(cur);</span><br><span class="line">            cur = cur-&gt;lch;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//如果当前节点为空，那么从栈顶弹出节点，并输出该节点，然后继续往下访问</span></span><br><span class="line">            <span class="comment">//右子节点</span></span><br><span class="line">            cur = s.top();</span><br><span class="line">            s.pop();</span><br><span class="line">            </span><br><span class="line">            <span class="built_in">cout</span>&lt;&lt;cur-&gt;val;</span><br><span class="line">            cur = cur-&gt;rch;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//层序遍历</span></span><br><span class="line"><span class="comment">//层序遍历跟前序遍历差不多，就是把栈换成了队列，然后左右子节点入队的顺序交换了一下</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">levelorderTraversal</span><span class="params">(Node *root)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">queue</span>&lt;Node *&gt; que;</span><br><span class="line">    Node *cur;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (root != NULL)</span><br><span class="line">        que.push(root);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (!que.empty()) &#123;</span><br><span class="line">        cur = que.front();</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;cur-&gt;val;</span><br><span class="line">        que.pop();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (cur-&gt;lch != NULL)</span><br><span class="line">            que.push(cur-&gt;lch);</span><br><span class="line">        <span class="keyword">if</span> (cur-&gt;rch != NULL)</span><br><span class="line">            que.push(cur-&gt;rch);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">Node <span class="title">root</span><span class="params">(1)</span></span>;</span><br><span class="line">    <span class="function">Node <span class="title">c1</span><span class="params">(2)</span></span>;</span><br><span class="line">    <span class="function">Node <span class="title">c2</span><span class="params">(3)</span></span>;</span><br><span class="line">    <span class="function">Node <span class="title">c3</span><span class="params">(4)</span></span>;</span><br><span class="line">    <span class="function">Node <span class="title">c4</span><span class="params">(5)</span></span>;</span><br><span class="line">    <span class="function">Node <span class="title">c5</span><span class="params">(6)</span></span>;</span><br><span class="line">    root.lch = &amp;c1;</span><br><span class="line">    root.rch = &amp;c2;</span><br><span class="line">    c1.lch = &amp;c3;</span><br><span class="line">    c1.rch = &amp;c4;</span><br><span class="line">    c2.lch = &amp;c5;</span><br><span class="line"></span><br><span class="line">    preorderTraversal(&amp;root);</span><br><span class="line">    postorderTraversal(&amp;root);</span><br><span class="line">    inorderTraversal(&amp;root);</span><br><span class="line">    levelorderTraversal(&amp;root);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/algorithms/">algorithms</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/二叉树/">二叉树</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yutianx.info/2014/10/23/2014-10-24-binary-tree-traversal/" data-title="二叉树的普通非递归遍历 | yutian&#39;s blog" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/10/25/2014-10-25-prim-mst/" title="图:最小生成树之Prim算法">
+  <strong>上一篇：</strong><br/>
+  <span>
+  图:最小生成树之Prim算法</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/10/23/2014-10-23-Topological-sorting/"  title="图：拓扑排序(Topological sort)">
+ <strong>下一篇：</strong><br/> 
+ <span>图：拓扑排序(Topological sort)
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2014/10/23/2014-10-24-binary-tree-traversal/" data-title="二叉树的普通非递归遍历" data-url="http://yutianx.info/2014/10/23/2014-10-24-binary-tree-traversal/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/LeetCode/" title="LeetCode">LeetCode<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/algorithms/" title="algorithms">algorithms<sup>22</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/cpp/" title="cpp">cpp<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/docker/" title="docker">docker<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/golang/" title="golang">golang<sup>4</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/linux/" title="linux">linux<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/problems/" title="problems">problems<sup>21</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/操作系统/" title="操作系统">操作系统<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/动态规划/" title="动态规划">动态规划<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/二叉树/" title="二叉树">二叉树<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/图/" title="图">图<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/二分搜索/" title="二分搜索">二分搜索<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://1mhz.me" target="_blank" title="1mhz">1mhz</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m Zhenxing Wu in BUPT. <br/>
+			This is my blog.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		<a href="https://github.com/yutianwu" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:wzxingbupt@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="雨天">雨天</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"雨天byr"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-53478698-1', 'yutianx.info');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

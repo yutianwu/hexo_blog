@@ -1,0 +1,28 @@
+FATAL Something's wrong. Maybe you can find the solution here: http://hexo.io/docs/troubleshooting.html
+Template render error: unknown block tag: highlight
+    at Error.exports.TemplateError (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/nunjucks/src/lib.js:51:19)
+    at Object.extend.fail (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/nunjucks/src/parser.js:64:15)
+    at Object.extend.parseStatement (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/nunjucks/src/parser.js:544:18)
+    at Object.extend.parseNodes (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/nunjucks/src/parser.js:1151:30)
+    at Object.extend.parseAsRoot (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/nunjucks/src/parser.js:1177:42)
+    at Object.module.exports.parse (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/nunjucks/src/parser.js:1199:18)
+    at Object.module.exports.compile (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/nunjucks/src/compiler.js:1118:48)
+    at Obj.extend._compile (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/nunjucks/src/environment.js:444:35)
+    at Obj.extend.compile (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/nunjucks/src/environment.js:433:18)
+    at null.<anonymous> (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/nunjucks/src/environment.js:378:22)
+    at Object.exports.withPrettyErrors (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/nunjucks/src/lib.js:24:16)
+    at Obj.extend.render (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/nunjucks/src/environment.js:374:20)
+    at Obj.extend.renderString (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/nunjucks/src/environment.js:261:21)
+    at /Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/lib/extend/tag.js:56:9
+    at tryCatcher (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/bluebird/js/main/util.js:24:31)
+    at Promise._resolveFromResolver (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/bluebird/js/main/promise.js:427:31)
+    at new Promise (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/bluebird/js/main/promise.js:53:37)
+    at Tag.render (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/lib/extend/tag.js:55:10)
+    at /Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/lib/hexo/post.js:320:16
+    at tryCatcher (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/bluebird/js/main/util.js:24:31)
+    at Promise._settlePromiseFromHandler (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/bluebird/js/main/promise.js:454:31)
+    at Promise._settlePromiseAt (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/bluebird/js/main/promise.js:530:18)
+    at Async._drainQueue (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/bluebird/js/main/async.js:182:12)
+    at Async._drainQueues (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/bluebird/js/main/async.js:187:10)
+    at Immediate.Async.drainQueues [as _onImmediate] (/Users/wuzhenxing/Documents/development/myblog/node_modules/hexo/node_modules/bluebird/js/main/async.js:15:14)
+    at processImmediate [as _immediateCallback] (timers.js:358:17)

@@ -1,0 +1,623 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Docker文件系统 | yutian&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="雨天">
+    
+
+    
+    <meta name="description" content="Docker文件系统概述典型的Linux文件系统由bootfs和rootfs两部分组成，bootfs(boot file system)主要包含 bootloader和kernel，bootloader主要是引导加载kernel，当kernel被加载到内存中后 bootfs就被umount了。 rootfs (root file system) 包含的就是典型 Linux 系统中的/dev，/pr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker文件系统">
+<meta property="og:url" content="http://yutianx.info/2015/05/20/2015-05-20-docker-filesystem/index.html">
+<meta property="og:site_name" content="yutian's blog">
+<meta property="og:description" content="Docker文件系统概述典型的Linux文件系统由bootfs和rootfs两部分组成，bootfs(boot file system)主要包含 bootloader和kernel，bootloader主要是引导加载kernel，当kernel被加载到内存中后 bootfs就被umount了。 rootfs (root file system) 包含的就是典型 Linux 系统中的/dev，/pr">
+<meta property="og:image" content="/img/docker-filesystem-1.png">
+<meta property="og:image" content="/img/docker-filesystem-2.png">
+<meta property="og:image" content="/img/docker-filesystem-3.png">
+<meta property="og:image" content="/img/docker-filesystem-4.png">
+<meta property="og:image" content="/img/docker-filesystem-5.png">
+<meta property="og:image" content="/img/docker-filesystem-6.png">
+<meta property="og:image" content="/img/docker-filesystem-7.png">
+<meta property="og:image" content="/img/docker-filesystem-8.png">
+<meta property="og:image" content="/img/docker-filesystem-9.png">
+<meta property="og:image" content="/img/docker-filesystem-10.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Docker文件系统">
+<meta name="twitter:description" content="Docker文件系统概述典型的Linux文件系统由bootfs和rootfs两部分组成，bootfs(boot file system)主要包含 bootloader和kernel，bootloader主要是引导加载kernel，当kernel被加载到内存中后 bootfs就被umount了。 rootfs (root file system) 包含的就是典型 Linux 系统中的/dev，/pr">
+
+    
+    <link rel="alternative" href="/atom.xml" title="yutian&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/logo.svg">
+    <link rel="apple-touch-icon-precomposed" href="/img/logo.svg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="yutian&#39;s blog" title="yutian&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="yutian&#39;s blog">yutian&#39;s blog</a></h1>
+				<h2 class="blog-motto">stay hungry, stay foolish</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yutianx.info">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/05/20/2015-05-20-docker-filesystem/" title="Docker文件系统" itemprop="url">Docker文件系统</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="雨天" target="_blank" itemprop="author">雨天</a>
+		
+  <p class="article-time">
+    <time datetime="2015-05-20T05:11:20.000Z" itemprop="datePublished"> 发表于 2015-05-20</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker文件系统概述"><span class="toc-number">1.</span> <span class="toc-text">Docker文件系统概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker的文件系统驱动"><span class="toc-number">2.</span> <span class="toc-text">Docker的文件系统驱动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker对文件系统的初始化"><span class="toc-number">3.</span> <span class="toc-text">Docker对文件系统的初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关键流程"><span class="toc-number">4.</span> <span class="toc-text">关键流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载镜像"><span class="toc-number">4.1.</span> <span class="toc-text">下载镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建容器"><span class="toc-number">4.2.</span> <span class="toc-text">创建容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建镜像"><span class="toc-number">4.3.</span> <span class="toc-text">创建镜像</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Devicemapper"><span class="toc-number">5.</span> <span class="toc-text">Devicemapper</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#背景介绍"><span class="toc-number">5.1.</span> <span class="toc-text">背景介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Snapshot"><span class="toc-number">5.1.1.</span> <span class="toc-text">Snapshot</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thin-Provisioning"><span class="toc-number">5.1.2.</span> <span class="toc-text">Thin-Provisioning</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#devicemapper概述"><span class="toc-number">5.2.</span> <span class="toc-text">devicemapper概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关键流程-1"><span class="toc-number">5.3.</span> <span class="toc-text">关键流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#初始化devicemapper"><span class="toc-number">5.3.1.</span> <span class="toc-text">初始化devicemapper</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#创建设备"><span class="toc-number">5.3.2.</span> <span class="toc-text">创建设备</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AUFS"><span class="toc-number">6.</span> <span class="toc-text">AUFS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AUFS概述"><span class="toc-number">6.1.</span> <span class="toc-text">AUFS概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#镜像存储"><span class="toc-number">6.1.1.</span> <span class="toc-text">镜像存储</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#创建容器时的文件操作"><span class="toc-number">6.1.2.</span> <span class="toc-text">创建容器时的文件操作</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关键流程-2"><span class="toc-number">6.2.</span> <span class="toc-text">关键流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#aufs的初始化"><span class="toc-number">6.2.1.</span> <span class="toc-text">aufs的初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#创建设备-1"><span class="toc-number">6.2.2.</span> <span class="toc-text">创建设备</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文献"><span class="toc-number">7.</span> <span class="toc-text">参考文献</span></a></li></ol>
+		
+		</div>
+		
+		<h2 id="Docker文件系统概述">Docker文件系统概述</h2><p>典型的Linux文件系统由bootfs和rootfs两部分组成，bootfs(boot file system)主要包含 bootloader和kernel，bootloader主要是引导加载kernel，当kernel被加载到内存中后 bootfs就被umount了。 rootfs (root file system) 包含的就是典型 Linux 系统中的/dev，/proc，/bin，/etc等标准目录和文件。</p>
+<p><img src="/img/docker-filesystem-1.png" alt=""></p>
+<p>联合文件系统（UnionFS）是一种分层、轻量级并且高性能的文件系统，它支持对文件系统的修改作为一次提交来一层层的叠加，同时可以将不同目录挂载到同一个虚拟文件系统下(unite several directories into a single virtual filesystem)。</p>
+<p>联合文件系统是 Docker 镜像的基础。镜像可以通过分层来进行继承，基于基础镜像（没有父镜像），可以制作各种具体的应用镜像。另外，不同 Docker 容器就可以共享一些基础的文件系统层，同时再加上自己独有的改动层，大大提高了存储的效率。<br>Aufs也是一种Union FS, 支持将不同的目录挂载到同一个虚拟文件系统下，并实现一种layer的概念。Aufs将挂载到同一虚拟文件系统下的多个目录分别设置成read-only，read-write以及whiteout-able权限，对read-only目录只能读，而写操作只能实施在read-write目录中。重点在于，写操作是在read-only上的一种增量操作，不影响read-only目录。当挂载目录的时候要严格按照各目录之间的这种增量关系，将被增量操作的目录优先于在它基础上增量操作的目录挂载，待所有目录挂载结束了，继续挂载一个read-write目录，如此便形成了一种层次结构。</p>
+<p>Docker镜像的典型结构如下图。传统的Linux加载bootfs时会先将rootfs设为read-only，然后在系统自检之后将rootfs从read-only改为read-write，然后我们就可以在rootfs上进行写和读的操作了。但Docker的镜像却不是这样，它在bootfs自检完毕之后并不会把rootfs的read-only改为read-write。而是利用union mount（UnionFS的一种挂载机制）将一个或多个read-only的rootfs加载到之前的read-only的rootfs层之上。在加载了这么多层的rootfs之后，仍然让它看起来只像是一个文件系统，在Docker的体系里把union mount的这些read-only的rootfs叫做Docker的镜像。但是，此时的每一层rootfs都是read-only的，我们此时还不能对其进行操作。当我们创建一个容器，也就是将Docker镜像进行实例化，系统会在一层或是多层read-only的rootfs之上分配一层空的read-write的rootfs。</p>
+<p><img src="/img/docker-filesystem-2.png" alt=""></p>
+<p>Docker 目前支持的联合文件系统种类包括 AUFS, btrfs, vfs 和 DeviceMapper。</p>
+<h2 id="Docker的文件系统驱动">Docker的文件系统驱动</h2><p>Docker定义了一个驱动原型的接口，<code>ProtoDriver</code>:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ProtoDriver <span class="keyword">interface</span> &#123;</span><br><span class="line">    String() <span class="typename">string</span></span><br><span class="line">    Create(id, parent <span class="typename">string</span>) error</span><br><span class="line">    Remove(id <span class="typename">string</span>) error</span><br><span class="line">    Get(id, mountLabel <span class="typename">string</span>) (dir <span class="typename">string</span>, err error)</span><br><span class="line">    Put(id <span class="typename">string</span>) error</span><br><span class="line">    Exists(id <span class="typename">string</span>) <span class="typename">bool</span></span><br><span class="line">    Status() [][<span class="number">2</span>]<span class="typename">string</span></span><br><span class="line">    Cleanup() error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>还定义了一个<code>Driver</code>的接口，该接口继承了<code>ProtoDriver</code>:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Driver <span class="keyword">interface</span> &#123;</span><br><span class="line">    ProtoDriver</span><br><span class="line">    Diff(id, parent <span class="typename">string</span>) (archive.Archive, error)</span><br><span class="line">    Changes(id, parent <span class="typename">string</span>) ([]archive.Change, error)</span><br><span class="line">    ApplyDiff(id, parent <span class="typename">string</span>, diff archive.ArchiveReader) (size <span class="typename">int64</span>, err error)</span><br><span class="line">    DiffSize(id, parent <span class="typename">string</span>) (size <span class="typename">int64</span>, err error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>ProtoDriver中定义了一些各个文件系统所需要的基本操作，比如Create,Remove等。Driver继承了ProtoDriver，并增加了几个函数，比如Diff,ApplyDiff等，这主要是为了向aufs这种有layer概念的文件系统，还有像devicemapper这种有snapshot概念的文件系统构建设备提供方便。<br>像aufs直接是支持Diff,ApplyDiff等操作的，所以aufs的驱动直接实现了这个Driver这个接口。但是devicemapper并不直接支持这种操作，所以这里又定义了一个naiveDiffDriver的struct，也继承了ProtoDriver,但是又添加了Driver中多出的几个函数。这样，devicemapper等不直接支持那些操作的文件系统也可以间接得通过naiveDiffDriver实现这些功能。</p>
+<h2 id="Docker对文件系统的初始化">Docker对文件系统的初始化</h2><p><img src="/img/docker-filesystem-3.png" alt=""></p>
+<p>在initFunc中，会调用已经注册的文件系统驱动来进行初始化，或者如果没有注册过驱动，会按照文件系统的优先级来对文件系统进行初始化。<br>例如，在支持aufs的文件系统中，就会调用aufs文件系统提供的initFunc进行初始化；在支持devicemapper的文件系统中，就会调用devicemapper的initFunc进行初始化。</p>
+<h2 id="关键流程">关键流程</h2><h3 id="下载镜像">下载镜像</h3><p><img src="/img/docker-filesystem-4.png" alt=""></p>
+<p>从上图可以看出，在下载镜像时，docker先把镜像从hub上下载下来，然后注册该镜像。注册的流程就是以该镜像的parent的设备为基础，构建一个新的设备。然后将下载下来的image所做的改动应用到新建的设备上，这样就形成了一个以该image的ID为名的设备了。其实就是一个镜像。</p>
+<h3 id="创建容器">创建容器</h3><p><img src="/img/docker-filesystem-5.png" alt=""></p>
+<p>从上图我们可以看到，在创建容器时，docker创建了两个设备，一个设备的名称为container.ID-init，简称为initID,另一个名称为container.ID。intid是根据imageId这个设备创建的，从前面下载镜像的流程中我们可以知道，只要存在image，那么imageID这个镜像也就会存在。创建完成initID后，会对该设备进行初始化操作，比如说导入一些跟容器相关的配置文件等。然后根据初始化完成的设备initID构建一个名为container.ID的设备，这个设备就是容器的设备了，将该设备挂载到相应的挂载点上，我们就可以看到创建的容器了。Docker本身也是这么做的。</p>
+<h3 id="创建镜像">创建镜像</h3><p>创建镜像的流程如下：<br><img src="/img/docker-filesystem-6.png" alt=""><br>当我们使用commit命令创建一个镜像时，首先导出我们在容器中所做的修改，这个功能由函数Diff来实现。此时将要创建的image的ID为imgID,而容器所使用的镜像ID为parentId。我们首先根据parentID这个设备来新建一个名为imgID的设备。然后我们将得到的修改rwTar添加到imgID这个设备中。这样，我们就得到了一个新的镜像。</p>
+<h2 id="Devicemapper">Devicemapper</h2><h3 id="背景介绍">背景介绍</h3><h4 id="Snapshot">Snapshot</h4><p>Snapshot是Lvm提供的一种特性，它可以在不中断服务运行的情况下为the origin（original device）创建一个虚拟快照(Snapshot)，它具有以下几个特点：</p>
+<ul>
+<li>当the origin内容发生变化时，snapshot对变化的部分做一个拷贝以用来对the origin进行重构。</li>
+<li>因为只对变化的部分做拷贝，所以Lvm的Snapshot在读操作频繁而写操作不频繁的情况下占用很少的一部分空间便能完成特定任务。</li>
+<li>当Snapshot大小耗尽或者远大于实际需求时，我们可以对其大小进行调节。</li>
+<li>当对Snapshot的数据进行写操作的时候，Snapshot实施相应操作，并丢弃从the origin的拷贝，以后的操作以写操作之后Snapshot中的数据为准。</li>
+<li>在某些发行版的Linux系统下，可以使用lvconvert的—merge选项将Snapshot合并回the origin。</li>
+</ul>
+<h4 id="Thin-Provisioning">Thin-Provisioning</h4><p>Thin-Provisioning是一项利用虚拟化方法减少物理存储部署的技术，可最大限度提升存储空间利用率。下图中展示了某位用户向服务器管理员请求分配10TB的资源的情形。实际情况中这个数值往往是峰值，根据使用情况，分配2TB就已足够。因此，系统管理员准备2TB的物理存储，并给服务器分配10TB的虚拟卷。服务器即可基于仅占虚拟卷容量1/5的现有物理磁盘池开始运行。这样的“始于小”方案能够实现更高效地利用存储容量。</p>
+<p><img src="/img/docker-filesystem-7.png" alt=""></p>
+<p>Thin-provisioning Snapshot结合Thin-Provisioning和Snapshot两种技术，允许多个虚拟设备同时挂载到一个数据卷以达到数据共享的目的。Thin-Provisioning Snapshot的特点如下：</p>
+<ul>
+<li>可以将不同的snaptshot挂载到同一个the origin上，节省了磁盘空间。</li>
+<li>当多个Snapshot挂载到了同一个the origin上，并在the origin上发生写操作时，将会触发COW操作。这样不会降低效率。</li>
+<li>Thin-Provisioning Snapshot支持递归操作，即一个Snapshot可以作为另一个Snapshot的the origin，且没有深度限制。</li>
+<li>在Snapshot上可以创建一个逻辑卷，这个逻辑卷在实际写操作（COW，Snapshot写操作）发生之前是不占用磁盘空间的。</li>
+</ul>
+<p>Thin-Provisioning Snapshot虽然有诸多优点，但是也有很多不足之处，例如大小固定等问题。<br>Thin-Provisioning Snapshot是作为device mapper的一个target在内核中实现的。Device mapper 是Linux 2.6内核中提供的一种从逻辑设备到物理设备的映射框架机制。在该机制下，用户可以很方便的根据自己的需要制定实现存储资源的管理策略，如条带化，镜像，快照等。<br>Device Mapper主要包含内核空间的映射和用户空间的device mapper库及dmsetup工具。Device Mapper库是对ioctl、用户空间创建删除Device Mapper逻辑设备所需必要操作的封装，dmsetup是一个提供给用户直接可用的创建删除device mapper设备的命令行工具</p>
+<h3 id="devicemapper概述">devicemapper概述</h3><p>Docker在初始化过程中，会在<code>/var/lib/docker/devicemapper/devicemapper</code>目录下创建一个100G的稀疏文件<code>data</code>，用于存储数据，和一个2G的稀疏文件<code>metadata</code>用于存储元数据然后分别附加到回环块设备<code>/dev/loop0</code>和<code>/dev/loop1</code>。然后基于回环块设备创建<code>thin pool</code><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/dev/loop0: [<span class="number">64769</span>]:<span class="number">135007216</span> (/var/lib/docker/devicemapper/devicemapper/data)</span><br><span class="line">/dev/loop1: [<span class="number">64769</span>]:<span class="number">135007217</span> (/var/lib/docker/devicemapper/devicemapper/metadata)</span><br></pre></td></tr></table></figure></p>
+<p>在创建容器时，devicemapper会在thin pool中基于一个基础镜像新建一个默认大小为10G的设备，然后将设备的信息写入到metadata中。我们可以通过修改docker的启动参数来调整data文件和metadata文件的大小，比如将data文件的大小修改为200G，metadata文件大小修改为4G，默认设备大小修改为20G：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="operator">-d</span> --storage-opt dm.basesize=<span class="number">20</span>G --storage-opt dm.loopdatasize=<span class="number">200</span>G --storage-opt dm.loopmetadatasize=<span class="number">4</span>G</span><br></pre></td></tr></table></figure></p>
+<p>当修改配置，重启docker服务时，所有的镜像，容器都会被删除，所以在重新设置时要注意做好备份。</p>
+<h3 id="关键流程-1">关键流程</h3><h4 id="初始化devicemapper">初始化devicemapper</h4><p><img src="/img/docker-filesystem-8.png" alt=""><br>初始化devicemapper时，docker会基于data文件创建一个thin pool，用于存储容器设备。然后建立一个基础镜像baseImage。如果创建设备时没有指定父设备的时候，就会以baseImage为父设备新建一个设备。</p>
+<h4 id="创建设备">创建设备</h4><p><img src="/img/docker-filesystem-9.png" alt=""><br>从上可以看出，devicemapper创建设备的流程为：先根据父设备创建一个快照，生成一个新的设备，然后注册该设备，即将该设备的元数据写入metadata文件中。</p>
+<h2 id="AUFS">AUFS</h2><h3 id="AUFS概述">AUFS概述</h3><p>AUFS (AnotherUnionFS) 是一种 Union FS, 简单来说就是支持将不同目录挂载到同一个虚拟文件系统下(unite several directories into a single virtual filesystem)的文件系统。 Aufs driver是docker 最早支持的driver，但是aufs只是linux内核的一个补丁集而且不太可以会被合并加入到linux内核中。但是由于aufs是唯一一个 storage driver可以实现容器间共享可执行及可共享的运行库, 所以当你跑成千上百个拥有相同程序代码或者运行库时时候，aufs是个相当不错的选择。</p>
+<h4 id="镜像存储">镜像存储</h4><p>在AUFS中，镜像存储的位置为<code>/var/lib/docker/aufs</code>。Aufs目录的结构如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">aufs/</span><br><span class="line">├── diff</span><br><span class="line">├── layers</span><br><span class="line">└── mnt</span><br></pre></td></tr></table></figure></p>
+<p>其中<code>diff</code>目录下存储的是镜像的具体信息；<code>layers</code>目录下存储的是镜像的继承结构,<code>mnt</code>是启动容器rootfs的挂载目录。下面分别介绍一下各个目录的具体信息。</p>
+<ul>
+<li><p>Layers目录<br><code>Layer</code>目录下存放的是每个镜像的继承关系文件。比如说<code>ubuntu:latest</code>镜像的imageid为<code>2103b00b3fdf1d26a86aded36ae73c1c425def0f779a6e69073b3b77377df348</code>，那么在这个目录下就会存在一个名为<code>2103b00b3fdf1d26a86aded36ae73c1c425def0f779a6e69073b3b77377df348</code>的文件，存储了镜像的继承结构，文件的内容为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">4</span>faa69f72743ce3a18508e840ff84598952<span class="built_in">fc</span>05bd1de5fd54c6bc0f8ca835884</span><br><span class="line"><span class="number">76</span>b658ecb5644a4aca23b35de695803ad2e223da087d4f8015016021bd970169</span><br><span class="line">f0dde87450ec8236a64aebd3e8b499fe2772fca5e837ecbfa97bd8ae380c605e</span><br><span class="line"><span class="number">511136</span>ea3c5a64f264b78b5433614aec563103b4d4702f3ba7d4d2698e22c158</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Diff目录<br>因为docker中，每一个镜像都是基于上一层镜像。所以在<code>diff</code>目录下，存储的是每一个镜像相对于上一层镜像所做的增量修改。如果只有<code>ubuntu:latest</code>这一个镜像，那么目录下就会存在以下几个目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2103</span>b00b3fdf1d26a86aded36ae73c1c425def0f779a6e69073b3b77377df348</span><br><span class="line"><span class="number">4</span>faa69f72743ce3a18508e840ff84598952<span class="built_in">fc</span>05bd1de5fd54c6bc0f8ca835884</span><br><span class="line"><span class="number">76</span>b658ecb5644a4aca23b35de695803ad2e223da087d4f8015016021bd970169</span><br><span class="line">f0dde87450ec8236a64aebd3e8b499fe2772fca5e837ecbfa97bd8ae380c605e</span><br><span class="line"><span class="number">511136</span>ea3c5a64f264b78b5433614aec563103b4d4702f3ba7d4d2698e22c158</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>每一个目录下保存的即为该层镜像基于上层镜像所做的修改。</p>
+<ul>
+<li>mnt目录<br><code>mnt</code>是挂载文件系统的目录，比如说启动一个<code>ubuntu:lastest</code>的容器，在<code>mnt</code>下就能够看到容器id的目录，目录下是容器的rootfs.</li>
+</ul>
+<h4 id="创建容器时的文件操作">创建容器时的文件操作</h4><p>创建一个基于<code>ubuntu:lastest</code>的容器并启动，假如容器id为<code>3eaa0e6ed18f949e0d0cf2ddfaa44c166063e8753676e2ec2c61ed2d2bd134f1</code>，我们就会发现在<code>diff</code>目录下会多出两个目录：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3</span>eaa0e6ed18f949e0d0cf2ddfaa44c166063e8753676e2ec2c61ed2d2bd134f1</span><br><span class="line"><span class="number">3</span>eaa0e6ed18f949e0d0cf2ddfaa44c166063e8753676e2ec2c61ed2d2bd134f1-init</span><br></pre></td></tr></table></figure></p>
+<p>其中<code>3eaa0e6ed18f949e0d0cf2ddfaa44c166063e8753676e2ec2c61ed2d2bd134f1-init</code>存储的是容器的初始信息，比如说一些在启动容器时需要加载的一些配置文件，比如<code>hosts</code>, <code>resolv.conf</code>等。而<code>3eaa0e6ed18f949e0d0cf2ddfaa44c166063e8753676e2ec2c61ed2d2bd134f1</code>目录下存储的是在容器中所做的修改。如果我们在容器中新建一个名为<code>test</code>的大小为<code>10M</code>的文件，那么我们会在<code>ec872d7343abdcf14ec900a0667363e78eaf603fee61f09ba6e6b41773f14f85</code>中看到该<code>test</code>文件，而<code>3eaa0e6ed18f949e0d0cf2ddfaa44c166063e8753676e2ec2c61ed2d2bd134f1-init</code>目录中不会有什么修改。<br>此时，我们如果commit该容器，得到一个imageid为<code>ec872d7343abdcf14ec900a0667363e78eaf603fee61f09ba6e6b41773f14f85</code>的镜像。而diff目录下以该imageid为目录名的目录下存储的正是该<code>test</code>文件。</p>
+<h3 id="关键流程-2">关键流程</h3><h4 id="aufs的初始化">aufs的初始化</h4><p>Aufs在初始化Init函数中主要完成了以下几个操作：</p>
+<ul>
+<li>调用surportsAufs函数加载Aufs模块。</li>
+<li>调用MakePrivate在系统中为/var/lib/docker/aufs创建一个挂载点。这里的实现原理与mount —bind命令一样，只不过mount命令的源文件夹和目的文件夹一样，在系统中只创建了挂载点而已。并且这个挂载点的内容即不受源文件夹的影响也不影响源文件夹。</li>
+<li>最后，在/var/lib/docker/aufs创建mnt， diff， layers文件夹。mnt文件夹为容器的挂载点目录，每一个容器在mnt下都有一个长ID目录，对应为该容器的rootfs的挂载点。diff有着与mnt中对应的长ID目录，这里的每个目录对应Docker 镜像的一个layer层，里面存放的是该layer相比较于父layer变化的内容。注意： 这里才是存放我们在容器中看到的内容的地方，比如/usr, /bin等等。</li>
+</ul>
+<h4 id="创建设备-1">创建设备</h4><p><img src="/img/docker-filesystem-10.png" alt=""><br>从上可以看出，aufs创建设备的步骤很简单，首先是在mnt,diff目录下创建相应的目录，然后创建layers文件，里面记录的是image的层次关系。</p>
+<h2 id="参考文献">参考文献</h2><p><a href="http://www.infoq.com/cn/articles/analysis-of-docker-file-system-aufs-and-devicemapper/(大部分都是从这摘抄过来的，感谢作者写得这么细致" target="_blank" rel="external">http://www.infoq.com/cn/articles/analysis-of-docker-file-system-aufs-and-devicemapper/(大部分都是从这摘抄过来的，感谢作者写得这么细致</a>)</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/docker/">docker</a>
+</div>
+
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yutianx.info/2015/05/20/2015-05-20-docker-filesystem/" data-title="Docker文件系统 | yutian&#39;s blog" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/09/30/2015-09-30-leetcode-add-digits/" title="LeetCode: Add Digits">
+  <strong>上一篇：</strong><br/>
+  <span>
+  LeetCode: Add Digits</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/05/03/2015-05-03-operating-system/"  title="操作系统的一些笔记">
+ <strong>下一篇：</strong><br/> 
+ <span>操作系统的一些笔记
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2015/05/20/2015-05-20-docker-filesystem/" data-title="Docker文件系统" data-url="http://yutianx.info/2015/05/20/2015-05-20-docker-filesystem/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker文件系统概述"><span class="toc-number">1.</span> <span class="toc-text">Docker文件系统概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker的文件系统驱动"><span class="toc-number">2.</span> <span class="toc-text">Docker的文件系统驱动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker对文件系统的初始化"><span class="toc-number">3.</span> <span class="toc-text">Docker对文件系统的初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关键流程"><span class="toc-number">4.</span> <span class="toc-text">关键流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载镜像"><span class="toc-number">4.1.</span> <span class="toc-text">下载镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建容器"><span class="toc-number">4.2.</span> <span class="toc-text">创建容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建镜像"><span class="toc-number">4.3.</span> <span class="toc-text">创建镜像</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Devicemapper"><span class="toc-number">5.</span> <span class="toc-text">Devicemapper</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#背景介绍"><span class="toc-number">5.1.</span> <span class="toc-text">背景介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Snapshot"><span class="toc-number">5.1.1.</span> <span class="toc-text">Snapshot</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thin-Provisioning"><span class="toc-number">5.1.2.</span> <span class="toc-text">Thin-Provisioning</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#devicemapper概述"><span class="toc-number">5.2.</span> <span class="toc-text">devicemapper概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关键流程-1"><span class="toc-number">5.3.</span> <span class="toc-text">关键流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#初始化devicemapper"><span class="toc-number">5.3.1.</span> <span class="toc-text">初始化devicemapper</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#创建设备"><span class="toc-number">5.3.2.</span> <span class="toc-text">创建设备</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AUFS"><span class="toc-number">6.</span> <span class="toc-text">AUFS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AUFS概述"><span class="toc-number">6.1.</span> <span class="toc-text">AUFS概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#镜像存储"><span class="toc-number">6.1.1.</span> <span class="toc-text">镜像存储</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#创建容器时的文件操作"><span class="toc-number">6.1.2.</span> <span class="toc-text">创建容器时的文件操作</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关键流程-2"><span class="toc-number">6.2.</span> <span class="toc-text">关键流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#aufs的初始化"><span class="toc-number">6.2.1.</span> <span class="toc-text">aufs的初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#创建设备-1"><span class="toc-number">6.2.2.</span> <span class="toc-text">创建设备</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文献"><span class="toc-number">7.</span> <span class="toc-text">参考文献</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/LeetCode/" title="LeetCode">LeetCode<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/algorithms/" title="algorithms">algorithms<sup>22</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/cpp/" title="cpp">cpp<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/docker/" title="docker">docker<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/golang/" title="golang">golang<sup>4</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/linux/" title="linux">linux<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/problems/" title="problems">problems<sup>21</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/操作系统/" title="操作系统">操作系统<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/动态规划/" title="动态规划">动态规划<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/二叉树/" title="二叉树">二叉树<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/图/" title="图">图<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/二分搜索/" title="二分搜索">二分搜索<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://1mhz.me" target="_blank" title="1mhz">1mhz</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m Zhenxing Wu in BUPT. <br/>
+			This is my blog.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		<a href="https://github.com/yutianwu" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:wzxingbupt@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="雨天">雨天</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"雨天byr"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-53478698-1', 'yutianx.info');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>

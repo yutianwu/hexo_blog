@@ -1,0 +1,561 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>四则运算计算器实现 | yutian&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="雨天">
+    
+
+    
+    <meta name="description" content="波兰表示法与逆波兰表示法波兰表示法（Polish notation，或波兰记法），是一种逻辑、算术和代数表示方法，其特点是操作符置于操作数的前面，因此也称做前缀表示法。与逆波兰表示法不同，前缀表达式基本没有在商业计算器中使用过，但是其体系经常在编译器构造的概念教学中首先使用。
+逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）中所有操作符置于操作数的后面，因此也被">
+<meta property="og:type" content="article">
+<meta property="og:title" content="四则运算计算器实现">
+<meta property="og:url" content="http://yutianx.info/2014/10/20/2014-10-20-Polish-notation/index.html">
+<meta property="og:site_name" content="yutian's blog">
+<meta property="og:description" content="波兰表示法与逆波兰表示法波兰表示法（Polish notation，或波兰记法），是一种逻辑、算术和代数表示方法，其特点是操作符置于操作数的前面，因此也称做前缀表示法。与逆波兰表示法不同，前缀表达式基本没有在商业计算器中使用过，但是其体系经常在编译器构造的概念教学中首先使用。
+逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）中所有操作符置于操作数的后面，因此也被">
+<meta property="og:image" content="/img/Shunting-Yard.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="四则运算计算器实现">
+<meta name="twitter:description" content="波兰表示法与逆波兰表示法波兰表示法（Polish notation，或波兰记法），是一种逻辑、算术和代数表示方法，其特点是操作符置于操作数的前面，因此也称做前缀表示法。与逆波兰表示法不同，前缀表达式基本没有在商业计算器中使用过，但是其体系经常在编译器构造的概念教学中首先使用。
+逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）中所有操作符置于操作数的后面，因此也被">
+
+    
+    <link rel="alternative" href="/atom.xml" title="yutian&#39;s blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/logo.svg">
+    <link rel="apple-touch-icon-precomposed" href="/img/logo.svg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="yutian&#39;s blog" title="yutian&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="yutian&#39;s blog">yutian&#39;s blog</a></h1>
+				<h2 class="blog-motto">stay hungry, stay foolish</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yutianx.info">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/10/20/2014-10-20-Polish-notation/" title="四则运算计算器实现" itemprop="url">四则运算计算器实现</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="雨天" target="_blank" itemprop="author">雨天</a>
+		
+  <p class="article-time">
+    <time datetime="2014-10-20T07:52:20.000Z" itemprop="datePublished"> 发表于 2014-10-20</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#波兰表示法与逆波兰表示法"><span class="toc-number">1.</span> <span class="toc-text">波兰表示法与逆波兰表示法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调度场算法"><span class="toc-number">2.</span> <span class="toc-text">调度场算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#逆波兰表示法的求值"><span class="toc-number">3.</span> <span class="toc-text">逆波兰表示法的求值</span></a></li></ol>
+		
+		</div>
+		
+		<h2 id="波兰表示法与逆波兰表示法">波兰表示法与逆波兰表示法</h2><p><em>波兰表示法</em>（Polish notation，或波兰记法），是一种逻辑、算术和代数表示方法，其特点是操作符置于操作数的前面，因此也称做前缀表示法。与逆波兰表示法不同，前缀表达式基本没有在商业计算器中使用过，但是其体系经常在编译器构造的概念教学中首先使用。</p>
+<p><em>逆波兰表示法</em>（Reverse Polish notation，RPN，或逆波兰记法）中所有操作符置于操作数的后面，因此也被称为后缀表示法。逆波兰记法不需要括号来标识操作符的优先级。</p>
+<p>逆波兰记法中，操作符置于操作数的后面。例如表达“三加四”时，写作“3 4 +”，而不是“3 + 4”。如果有多个操作符，操作符置于第二个操作数的后面，所以常规中缀记法的“3 - 4 + 5”在逆波兰记法中写作“3 4 - 5 +”：先3减去4，再加上5。使用逆波兰记法的一个好处是不需要使用括号。例如中缀记法中“3 - 4 <em> 5”与“（3 - 4）</em>5”不相同，但后缀记法中前者写做“3 4 5 <em> -”，无歧义地表示“3 (4 5 </em>) −”；后者写做“3 4 - 5 *”。</p>
+<p>逆波兰表达式的解释器一般是基于堆栈的。解释过程一般是：操作数入栈；遇到操作符时，操作数出栈，求值，将结果入栈；当一遍后，栈顶就是表达式的值。因此逆波兰表达式的求值使用堆栈结构很容易实现，和能很快求值。</p>
+<p><em>中缀表示法</em>（或中缀记法）是一个通用的算术或逻辑公式表示方法， 操作符是以中缀形式处于操作数的中间（例：3 + 4）。</p>
+<h2 id="调度场算法">调度场算法</h2><p>调度场算法（Shunting Yard Algorithm）是一个用于将中缀表达式转换为后缀表达式的经典算法，因其操作类似于火车编组场而得名。<br><figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">当还有记号可以读取时：</span><br><span class="line">	读取一个记号。</span><br><span class="line">	如果这个记号表示一个数字，那么将其添加到输出队列中。</span><br><span class="line">	如果这个记号表示一个操作符，记做<span class="preprocessor">o1</span>，那么：</span><br><span class="line">		只要存在另一个记为<span class="preprocessor">o2</span>的操作符位于栈的顶端，并且</span><br><span class="line">			如果<span class="preprocessor">o1</span>是左结合性的并且它的运算符优先级要小于或者等于<span class="preprocessor">o2</span>的优先级，或者</span><br><span class="line">			如果<span class="preprocessor">o1</span>是右结合性的并且它的运算符优先级比<span class="preprocessor">o2</span>的要低，那么</span><br><span class="line">			将<span class="preprocessor">o2</span>从栈的顶端弹出并且放入输出队列中<span class="comment">(循环直至以上条件不满足为止)</span>；</span><br><span class="line">		然后，将<span class="preprocessor">o1</span>压入栈的顶端。</span><br><span class="line">	如果这个记号是一个左括号，那么就将其压入栈当中。</span><br><span class="line">	如果这个记号是一个右括号，那么：</span><br><span class="line">		从栈当中不断地弹出操作符并且放入输出队列中，直到栈顶部的元素为左括号为止。</span><br><span class="line">		将左括号从栈的顶端弹出，但并不放入输出队列中去。</span><br><span class="line">		如果在找到一个左括号之前栈就已经弹出了所有元素，那么就表示在表达式中存在不匹配的括号。</span><br><span class="line">当再没有记号可以读取时：</span><br><span class="line">	如果此时在栈当中还有操作符：</span><br><span class="line">		如果此时位于栈顶端的操作符是一个括号，那么就表示在表达式中存在不匹配的括号。</span><br><span class="line">	将操作符逐个弹出并放入输出队列中。</span><br><span class="line">退出算法。</span><br></pre></td></tr></table></figure></p>
+<p><img src="/img/Shunting-Yard.png" alt=""></p>
+<h2 id="逆波兰表示法的求值">逆波兰表示法的求值</h2><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">WHILE</span> 有输入符号</span><br><span class="line">	读入下一个符号</span><br><span class="line">	<span class="keyword">IF</span> 是一个操作数</span><br><span class="line">		入栈</span><br><span class="line">	<span class="keyword">ELSE</span> <span class="keyword">IF</span> 是一个操作符</span><br><span class="line">		有一个先验的表格给出该操作符需要<span class="keyword">n</span>个参数</span><br><span class="line">		<span class="keyword">IF</span> 堆栈中少于<span class="keyword">n</span>个操作数</span><br><span class="line">			（错误） 用户没有输入足够的操作数</span><br><span class="line">		<span class="keyword">Else</span>，<span class="keyword">n</span>个操作数出栈</span><br><span class="line">		计算操作符。</span><br><span class="line">		将计算所得的值入栈</span><br><span class="line"><span class="keyword">IF</span> 栈内只有一个值</span><br><span class="line">	这个值就是整个计算式的结果</span><br><span class="line"><span class="keyword">ELSE</span> 多于一个值</span><br><span class="line">	（错误） 用户输入了多余的操作数</span><br></pre></td></tr></table></figure>
+<p>对于一般的算术表达式，一个操作符只需要两个参数。</p>
+<p><hr><br>下面给出四则运算器的代码实现<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt;</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;stack&gt;</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;queue&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//操作符的优先级</span></span><br><span class="line"><span class="comment">// 操作符 只考虑最简单的加减乘除</span></span><br><span class="line"><span class="comment">// 优先级		符号		运算顺序</span></span><br><span class="line"><span class="comment">// 1		* /     从左至右</span></span><br><span class="line"><span class="comment">// 2		+ -		从左至右</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">op_pri</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span>(c) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'*'</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'/'</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'-'</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'+'</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//判断字符是否为数字</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">is_ident</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> c &gt;= <span class="string">'0'</span> &amp;&amp; c &lt;= <span class="string">'9'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//判断字符是否为合法的操作符</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">is_op</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> c == <span class="string">'/'</span> || c == <span class="string">'*'</span> || c == <span class="string">'^'</span> || c == <span class="string">'-'</span> || c == <span class="string">'+'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//调度场函数</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">shunting_yard</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; &amp;input, <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; &amp;output)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//清空输出队列</span></span><br><span class="line">    <span class="keyword">while</span>(!output.empty())</span><br><span class="line">        output.clear();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//如果输入为空，直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (input.empty())</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">stack</span>&lt;<span class="keyword">char</span>&gt; op; <span class="comment">//操作符栈</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; input.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">char</span> c = input[i];</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">' '</span>)</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (is_ident(c)) &#123;</span><br><span class="line">            <span class="comment">//如果是数字，直接将字符加入到输出队列中</span></span><br><span class="line">            output.push_back(c);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (is_op(c)) &#123;</span><br><span class="line">            <span class="comment">//如果是操作符</span></span><br><span class="line">            <span class="comment">//如果操作符栈为空，直接将操作符压栈</span></span><br><span class="line">            <span class="keyword">if</span> (op.empty()) &#123;</span><br><span class="line">                op.push(c);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">char</span> op_top = op.top(); <span class="comment">//栈顶操作符</span></span><br><span class="line">            <span class="keyword">if</span> (!is_op(op_top) || op_pri(c) &gt; op_pri(op_top)) &#123;</span><br><span class="line">                <span class="comment">//如果操作符的优先级要大于栈顶的操作符或者栈顶操作符为括号，直接压栈</span></span><br><span class="line">                op.push(c);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//如果操作符的优先级要小于等于栈顶操作符，那么就一直将栈顶弹出</span></span><br><span class="line">                <span class="comment">//放入输出队列</span></span><br><span class="line">                <span class="keyword">while</span>(op_pri(c) &lt;= op_pri(op_top)) &#123;</span><br><span class="line">                    output.push_back(op_top);</span><br><span class="line">                    op.pop();</span><br><span class="line">                    <span class="keyword">if</span> (op.empty())</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    op_top = op.top();</span><br><span class="line">                &#125;</span><br><span class="line">                op.push(c);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">'('</span>) &#123;</span><br><span class="line">            <span class="comment">//如果是左括号，直接压栈</span></span><br><span class="line">            op.push(c);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (c == <span class="string">')'</span>) &#123;</span><br><span class="line">            <span class="comment">//如果是右括号，弹出操作符，直到弹出左括号</span></span><br><span class="line">            <span class="keyword">while</span> (!op.empty()) &#123;</span><br><span class="line">                <span class="keyword">char</span> op_top = op.top();</span><br><span class="line">                <span class="keyword">if</span> (op_top != <span class="string">'('</span>) &#123;</span><br><span class="line">                    output.push_back(op_top);</span><br><span class="line">                    op.pop();</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> (!op.empty()) &#123;</span><br><span class="line">                <span class="comment">//如果找到了左括号，把左括号弹出</span></span><br><span class="line">                op.pop();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//如果栈弹空了还没找到，那么表达式错误</span></span><br><span class="line">                output.clear();</span><br><span class="line">                <span class="built_in">cout</span>&lt;&lt;<span class="string">"表达式错误"</span>&lt;&lt;endl;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//如果有其他字符，那么错误</span></span><br><span class="line">            <span class="built_in">cout</span>&lt;&lt;<span class="string">"表达式错误"</span>&lt;&lt;endl;</span><br><span class="line">            output.clear();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (!op.empty()) &#123;</span><br><span class="line">        <span class="keyword">char</span> op_top = op.top();</span><br><span class="line">        <span class="keyword">if</span> (is_op(op_top)) &#123;</span><br><span class="line">            output.push_back(op_top);</span><br><span class="line">            op.pop();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">cout</span>&lt;&lt;<span class="string">"表达式错误"</span>&lt;&lt;endl;</span><br><span class="line">            output.clear();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//计算你波兰表达式的值</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">calculate</span><span class="params">(<span class="keyword">const</span> <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; &amp;output, <span class="keyword">double</span> &amp;result)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (output.empty())</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">stack</span>&lt;<span class="keyword">double</span>&gt; values;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; output.size(); i++) &#123;</span><br><span class="line">        <span class="keyword">char</span> c = output[i];</span><br><span class="line">        <span class="keyword">if</span> (is_ident(c)) &#123;</span><br><span class="line">            values.push(c - <span class="string">'0'</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (is_op(c)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (values.empty()) &#123;</span><br><span class="line">                <span class="built_in">cout</span>&lt;&lt;<span class="string">"表达式错误"</span>&lt;&lt;endl;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">int</span> left = values.top();</span><br><span class="line">            values.pop();</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> (values.empty()) &#123;</span><br><span class="line">                <span class="built_in">cout</span>&lt;&lt;<span class="string">"表达式错误"</span>&lt;&lt;endl;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">int</span> right = values.top();</span><br><span class="line">            values.pop();</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">switch</span>(c) &#123;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'+'</span>:</span><br><span class="line">                    values.push(right + left);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'-'</span>:</span><br><span class="line">                    values.push(right - left);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'*'</span>:</span><br><span class="line">                    values.push(right * left);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'/'</span>:</span><br><span class="line">                    values.push(right / left);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">cout</span>&lt;&lt;<span class="string">"表达式错误"</span>&lt;&lt;endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    result = values.top();</span><br><span class="line">    values.pop();</span><br><span class="line">    <span class="keyword">if</span> (!values.empty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">"表达式有误"</span>&lt;&lt;endl;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; input;</span><br><span class="line">    input.push_back(<span class="string">'3'</span>);</span><br><span class="line">    input.push_back(<span class="string">'+'</span>);</span><br><span class="line">    input.push_back(<span class="string">'4'</span>);</span><br><span class="line">    input.push_back(<span class="string">'*'</span>);</span><br><span class="line">    input.push_back(<span class="string">'2'</span>);</span><br><span class="line">    input.push_back(<span class="string">'/'</span>);</span><br><span class="line">    input.push_back(<span class="string">'('</span>);</span><br><span class="line">    input.push_back(<span class="string">'1'</span>);</span><br><span class="line">    input.push_back(<span class="string">'-'</span>);</span><br><span class="line">    input.push_back(<span class="string">'5'</span>);</span><br><span class="line">    input.push_back(<span class="string">')'</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">char</span>&gt; output;</span><br><span class="line">    shunting_yard(input, output);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; output.size(); i++) &#123;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;output[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">double</span> result;</span><br><span class="line">    <span class="keyword">if</span> (calculate(output, result)) &#123;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;result&lt;&lt;endl;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">cout</span>&lt;&lt;<span class="string">"计算错误"</span>&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/algorithms/">algorithms</a>
+</div>
+
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yutianx.info/2014/10/20/2014-10-20-Polish-notation/" data-title="四则运算计算器实现 | yutian&#39;s blog" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/10/23/2014-10-23-c-traps/" title="c语言的一些需要注意的小问题">
+  <strong>上一篇：</strong><br/>
+  <span>
+  c语言的一些需要注意的小问题</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/10/16/2014-10-16-binary-search-tree/"  title="二叉搜索树(binary search tree)">
+ <strong>下一篇：</strong><br/> 
+ <span>二叉搜索树(binary search tree)
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2014/10/20/2014-10-20-Polish-notation/" data-title="四则运算计算器实现" data-url="http://yutianx.info/2014/10/20/2014-10-20-Polish-notation/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#波兰表示法与逆波兰表示法"><span class="toc-number">1.</span> <span class="toc-text">波兰表示法与逆波兰表示法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#调度场算法"><span class="toc-number">2.</span> <span class="toc-text">调度场算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#逆波兰表示法的求值"><span class="toc-number">3.</span> <span class="toc-text">逆波兰表示法的求值</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/LeetCode/" title="LeetCode">LeetCode<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/algorithms/" title="algorithms">algorithms<sup>22</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/cpp/" title="cpp">cpp<sup>10</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/docker/" title="docker">docker<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/golang/" title="golang">golang<sup>4</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/linux/" title="linux">linux<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/problems/" title="problems">problems<sup>21</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/操作系统/" title="操作系统">操作系统<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/动态规划/" title="动态规划">动态规划<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/二叉树/" title="二叉树">二叉树<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/图/" title="图">图<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/二分搜索/" title="二分搜索">二分搜索<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://1mhz.me" target="_blank" title="1mhz">1mhz</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello ,I&#39;m Zhenxing Wu in BUPT. <br/>
+			This is my blog.</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		<a href="https://github.com/yutianwu" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<a href="mailto:wzxingbupt@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="雨天">雨天</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"雨天byr"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-53478698-1', 'yutianx.info');  
+ga('send', 'pageview');
+</script>
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  <!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
