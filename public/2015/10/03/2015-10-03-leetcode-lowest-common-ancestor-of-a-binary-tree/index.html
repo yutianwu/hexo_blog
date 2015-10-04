@@ -4,22 +4,28 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>操作系统的一些笔记 | yutian&#39;s blog</title>
+    <title>LeetCode: Lowest Common Ancestor of a Binary Tree | yutian&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="雨天">
     
 
     
-    <meta name="description" content="死锁两个或多个进程无线地等待一个事件，而该时间只可能由这些等待进程之一来产生。当出现这样的状态时，这些进程就称为死锁(deadlocked)。">
+    <meta name="description" content="Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+
+想法还是很简单，如果要判断当前节点是否是两个节点$p,q$的最低公共父节点，（假设我们是从上往下开始判断的），那么如果当前节点与两个节点之一相等，那么当前节点可能是这两个节点的最低公共父节点，返回；如果不相等，那么就">
 <meta property="og:type" content="article">
-<meta property="og:title" content="操作系统的一些笔记">
-<meta property="og:url" content="http://yutianx.info/2015/05/03/2015-05-03-operating-system/index.html">
+<meta property="og:title" content="LeetCode: Lowest Common Ancestor of a Binary Tree">
+<meta property="og:url" content="http://yutianx.info/2015/10/03/2015-10-03-leetcode-lowest-common-ancestor-of-a-binary-tree/index.html">
 <meta property="og:site_name" content="yutian's blog">
-<meta property="og:description" content="死锁两个或多个进程无线地等待一个事件，而该时间只可能由这些等待进程之一来产生。当出现这样的状态时，这些进程就称为死锁(deadlocked)。">
+<meta property="og:description" content="Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+
+想法还是很简单，如果要判断当前节点是否是两个节点$p,q$的最低公共父节点，（假设我们是从上往下开始判断的），那么如果当前节点与两个节点之一相等，那么当前节点可能是这两个节点的最低公共父节点，返回；如果不相等，那么就">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="操作系统的一些笔记">
-<meta name="twitter:description" content="死锁两个或多个进程无线地等待一个事件，而该时间只可能由这些等待进程之一来产生。当出现这样的状态时，这些进程就称为死锁(deadlocked)。">
+<meta name="twitter:title" content="LeetCode: Lowest Common Ancestor of a Binary Tree">
+<meta name="twitter:description" content="Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+
+想法还是很简单，如果要判断当前节点是否是两个节点$p,q$的最低公共父节点，（假设我们是从上往下开始判断的），那么如果当前节点与两个节点之一相等，那么当前节点可能是这两个节点的最低公共父节点，返回；如果不相等，那么就">
 
     
     <link rel="alternative" href="/atom.xml" title="yutian&#39;s blog" type="application/atom+xml">
@@ -79,14 +85,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/05/03/2015-05-03-operating-system/" title="操作系统的一些笔记" itemprop="url">操作系统的一些笔记</a>
+      <a href="/2015/10/03/2015-10-03-leetcode-lowest-common-ancestor-of-a-binary-tree/" title="LeetCode: Lowest Common Ancestor of a Binary Tree" itemprop="url">LeetCode: Lowest Common Ancestor of a Binary Tree</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="雨天" target="_blank" itemprop="author">雨天</a>
 		
   <p class="article-time">
-    <time datetime="2015-05-03T04:53:20.000Z" itemprop="datePublished"> 发表于 2015-05-03</time>
+    <time datetime="2015-10-03T13:49:20.000Z" itemprop="datePublished"> 发表于 2015-10-03</time>
     
   </p>
 </header>
@@ -95,11 +101,16 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#死锁"><span class="toc-number">1.</span> <span class="toc-text">死锁</span></a></li></ol>
+			
 		
 		</div>
 		
-		<h3 id="死锁">死锁</h3><p>两个或多个进程无线地等待一个事件，而该时间只可能由这些等待进程之一来产生。当出现这样的状态时，这些进程就称为死锁(deadlocked)。</p>
+		<blockquote>
+<p>Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.</p>
+</blockquote>
+<p>想法还是很简单，如果要判断当前节点是否是两个节点$p,q$的最低公共父节点，（假设我们是从上往下开始判断的），那么如果当前节点与两个节点之一相等，那么当前节点可能是这两个节点的最低公共父节点，返回；如果不相等，那么就在当前节点的两个子节点中找；如果再两个子节点中都找到了可能的最低公共父节点，那么当前节点即是结果，否则返回两个子节点找到得结果。</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"> * Definition for a binary tree node.</span><br><span class="line"> * struct TreeNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     TreeNode *left;</span><br><span class="line"> *     TreeNode *right;</span><br><span class="line"> *     TreeNode(int x) : val(x), left(NULL), right(NULL) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">class</span> Solution &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) &#123;</span><br><span class="line">        <span class="keyword">if</span> (root == NULL)</span><br><span class="line">            <span class="keyword">return</span> NULL;</span><br><span class="line">        <span class="keyword">if</span> (root == p || root == q)</span><br><span class="line">            <span class="keyword">return</span> root;</span><br><span class="line">        </span><br><span class="line">        TreeNode *left = lowestCommonAncestor(root-&gt;left, p, q);</span><br><span class="line">        TreeNode *right = lowestCommonAncestor(root-&gt;right, p, q);</span><br><span class="line">        <span class="keyword">if</span> (left != NULL &amp;&amp; right != NULL)</span><br><span class="line">            <span class="keyword">return</span> root;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (left == NULL &amp;&amp; right == NULL)</span><br><span class="line">            <span class="keyword">return</span> NULL;</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">return</span> left != NULL ? left : right;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -107,7 +118,7 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/操作系统/">操作系统</a>
+  <a class="article-category-link" href="/categories/LeetCode/">LeetCode</a>
 </div>
 
 
@@ -117,7 +128,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yutianx.info/2015/05/03/2015-05-03-operating-system/" data-title="操作系统的一些笔记 | yutian&#39;s blog" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yutianx.info/2015/10/03/2015-10-03-leetcode-lowest-common-ancestor-of-a-binary-tree/" data-title="LeetCode: Lowest Common Ancestor of a Binary Tree | yutian&#39;s blog" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -130,19 +141,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/05/20/2015-05-20-docker-filesystem/" title="Docker文件系统">
-  <strong>上一篇：</strong><br/>
-  <span>
-  Docker文件系统</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/04/30/2015-04-30-chroot/"  title="chroot的使用与构建一个简单的rootfs">
+<a href="/2015/09/30/2015-09-30-leetcode-add-digits/"  title="LeetCode: Add Digits">
  <strong>下一篇：</strong><br/> 
- <span>chroot的使用与构建一个简单的rootfs
+ <span>LeetCode: Add Digits
 </span>
 </a>
 </div>
@@ -151,7 +154,7 @@
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2015/05/03/2015-05-03-operating-system/" data-title="操作系统的一些笔记" data-url="http://yutianx.info/2015/05/03/2015-05-03-operating-system/"></div>
+	<div class="ds-thread" data-thread-key="2015/10/03/2015-10-03-leetcode-lowest-common-ancestor-of-a-binary-tree/" data-title="LeetCode: Lowest Common Ancestor of a Binary Tree" data-url="http://yutianx.info/2015/10/03/2015-10-03-leetcode-lowest-common-ancestor-of-a-binary-tree/"></div>
 </section>
 
 
@@ -161,7 +164,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#死锁"><span class="toc-number">1.</span> <span class="toc-text">死锁</span></a></li></ol>
+ 
  
   </div>
 
