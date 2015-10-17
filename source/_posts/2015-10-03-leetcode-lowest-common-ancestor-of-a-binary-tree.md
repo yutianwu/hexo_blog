@@ -3,6 +3,7 @@ layout: post
 title:  "LeetCode: Lowest Common Ancestor of a Binary Tree"
 categories: LeetCode
 date:   2015-10-03 21:49:20
+tags: ["Tree"]
 ---
 
 > Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.

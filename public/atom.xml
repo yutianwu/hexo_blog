@@ -4,7 +4,7 @@
   <subtitle><![CDATA[stay hungry, stay foolish]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://yutianx.info/"/>
-  <updated>2015-10-03T16:22:43.000Z</updated>
+  <updated>2015-10-17T04:06:29.000Z</updated>
   <id>http://yutianx.info/</id>
   
   <author>
@@ -15,11 +15,214 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[LeetCode: Product of Array Except Self]]></title>
+    <link href="http://yutianx.info/2015/10/17/2015-10-17-leetcode-product-of-array-except-self/"/>
+    <id>http://yutianx.info/2015/10/17/2015-10-17-leetcode-product-of-array-except-self/</id>
+    <published>2015-10-17T04:00:20.000Z</published>
+    <updated>2015-10-17T04:06:29.000Z</updated>
+    <content type="html"><![CDATA[<blockquote>
+<p>Given an array of <code>n</code> integers where <code>n &gt; 1</code>, <code>nums</code>, return an array output such that <code>output[i]</code> is equal to the product of all the elements of <code>nums</code> except <code>nums[i]</code>.</p>
+<p>Solve it without division and in <code>O(n)</code>.</p>
+<p>For example, given <code>[1,2,3,4]</code>, return <code>[24,12,8,6]</code>.</p>
+</blockquote>
+<p>思路就是扫描数组两遍，比如说我要求第<code>i</code>位的结果，那么我可以先求出来第<code>i</code>位之前和之后的数字的乘积，然后把这两个结果想乘就得到了结果。代码如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Solution &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; productExceptSelf(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; result(nums.size(), <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; nums.size(); i++) &#123;</span><br><span class="line">            result[i] *= nums[i - <span class="number">1</span>] * result[i - <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> pre = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = nums.size() - <span class="number">2</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">            pre *= nums[i + <span class="number">1</span>];</span><br><span class="line">            result[i] *= pre;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
+    <summary type="html">
+    <![CDATA[<blockquote>
+<p>Given an array of <code>n</code> integers where <code>n &gt; 1</code>, <code>nums</code>, return an array output such that <]]>
+    </summary>
+    
+      <category term="Array" scheme="http://yutianx.info/tags/Array/"/>
+    
+      <category term="LeetCode" scheme="http://yutianx.info/categories/LeetCode/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[LeetCode: Remove Linked List Elements]]></title>
+    <link href="http://yutianx.info/2015/10/08/2015-10-08-leetcode-remove-linked-list-elements/"/>
+    <id>http://yutianx.info/2015/10/08/2015-10-08-leetcode-remove-linked-list-elements/</id>
+    <published>2015-10-08T05:42:20.000Z</published>
+    <updated>2015-10-08T05:44:42.000Z</updated>
+    <content type="html"><![CDATA[<blockquote>
+<p>Remove all elements from a linked list of integers that have value val.</p>
+<p>Example</p>
+<p>Given: 1 —&gt; 2 —&gt; 6 —&gt; 3 —&gt; 4 —&gt; 5 —&gt; 6, val = 6</p>
+<p>Return: 1 —&gt; 2 —&gt; 3 —&gt; 4 —&gt; 5</p>
+</blockquote>
+<p>思路很简单，但是注意移动指针的条件：只有当没有删除节点时，指针才往后移，以后切记要仔细一点。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">class</span> Solution &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ListNode* removeElements(ListNode* head, <span class="keyword">int</span> val) &#123;</span><br><span class="line">        ListNode *dummy = <span class="keyword">new</span> ListNode(<span class="number">0</span>);</span><br><span class="line">        dummy-&gt;next = head;</span><br><span class="line">        ListNode *ptr = dummy;</span><br><span class="line">        <span class="keyword">while</span> (ptr != NULL &amp;&amp; ptr-&gt;next != NULL) &#123;</span><br><span class="line">            <span class="keyword">if</span> (ptr-&gt;next-&gt;val == val) &#123;</span><br><span class="line">                <span class="keyword">if</span> (ptr-&gt;next-&gt;next == NULL) </span><br><span class="line">                    ptr-&gt;next = NULL;</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    ptr-&gt;next-&gt;val = ptr-&gt;next-&gt;next-&gt;val;</span><br><span class="line">                    ptr-&gt;next-&gt;next = ptr-&gt;next-&gt;next-&gt;next;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ptr = ptr-&gt;next;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dummy-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
+    <summary type="html">
+    <![CDATA[<blockquote>
+<p>Remove all elements from a linked list of integers that have value val.</p>
+<p>Example</p>
+<p>Given: 1 —&gt; 2 —&gt; 6 —&gt;]]>
+    </summary>
+    
+      <category term="Linked List" scheme="http://yutianx.info/tags/Linked-List/"/>
+    
+      <category term="LeetCode" scheme="http://yutianx.info/categories/LeetCode/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[LeetCode: Rectangle Area]]></title>
+    <link href="http://yutianx.info/2015/10/07/2015-10-07-leetcode-rectangle-area/"/>
+    <id>http://yutianx.info/2015/10/07/2015-10-07-leetcode-rectangle-area/</id>
+    <published>2015-10-07T14:11:20.000Z</published>
+    <updated>2015-10-07T14:13:10.000Z</updated>
+    <content type="html"><![CDATA[<blockquote>
+<p>Find the total area covered by two rectilinear rectangles in a 2D plane.</p>
+<p>Each rectangle is defined by its bottom left corner and top right corner as shown in the figure.</p>
+</blockquote>
+<p>想法很简单，就是用两个矩形的总面积减去相交部分的面积就可以了。</p>
+<p>所以只要求出相交部分面积就可以了。先求相交部分矩形的长度，假设两个矩形的两个顶点分别为$(A, B), (C, D)$与$(E, F), (G, H)$,如果两个矩形相交，那么相交矩形的长度应该为$min(G, C) - max(A, E)$，而如果两个矩形不相交，那么求出来的结果应该为负；同理，可以求出相交矩形的宽度。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Solution &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">computeArea</span><span class="params">(<span class="keyword">int</span> A, <span class="keyword">int</span> B, <span class="keyword">int</span> C, <span class="keyword">int</span> D, <span class="keyword">int</span> E, <span class="keyword">int</span> F, <span class="keyword">int</span> G, <span class="keyword">int</span> H)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> x = <span class="number">0</span>, y = <span class="number">0</span>;</span><br><span class="line">        x = (<span class="keyword">long</span> <span class="keyword">long</span>)(G &lt;= C ? G : C) - (A &gt;= E ? A : E);</span><br><span class="line">        y = (<span class="keyword">long</span> <span class="keyword">long</span>)(D &lt;= H ? D : H) - (B &gt;= F ? B : F);</span><br><span class="line">        x = x &gt;= <span class="number">0</span> ? x : <span class="number">0</span>;</span><br><span class="line">        y = y &gt;= <span class="number">0</span> ? y : <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">return</span> (C - A) * (D - B) + (G - E) * (H - F) - x * y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+]]></content>
+    <summary type="html">
+    <![CDATA[<blockquote>
+<p>Find the total area covered by two rectilinear rectangles in a 2D plane.</p>
+<p>Each rectangle is defined by its bottom left]]>
+    </summary>
+    
+      <category term="Math" scheme="http://yutianx.info/tags/Math/"/>
+    
+      <category term="LeetCode" scheme="http://yutianx.info/categories/LeetCode/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[LeetCode: Word Pattern]]></title>
+    <link href="http://yutianx.info/2015/10/06/2015-10-06-leetcode-word-pattern/"/>
+    <id>http://yutianx.info/2015/10/06/2015-10-06-leetcode-word-pattern/</id>
+    <published>2015-10-06T13:40:20.000Z</published>
+    <updated>2015-10-07T14:12:18.000Z</updated>
+    <content type="html"><![CDATA[<blockquote>
+<p>Given a pattern and a string str, find if str follows the same pattern.</p>
+<p>Examples:</p>
+<ul>
+<li>pattern = “abba”, str = “dog cat cat dog” should return true.</li>
+<li>pattern = “abba”, str = “dog cat cat fish” should return false.</li>
+<li>pattern = “aaaa”, str = “dog cat cat dog” should return false.</li>
+<li>pattern = “abba”, str = “dog dog dog dog” should return false.</li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>Both pattern and str contains only lowercase alphabetical letters.</li>
+<li>Both pattern and str do not have leading or trailing spaces.</li>
+<li>Each word in str is separated by a single space.</li>
+<li>Each letter in pattern must map to a word with length that is at least 1.</li>
+</ul>
+</blockquote>
+<p>思路还是很简单的，使用如<code>&#39;a&#39;-&gt;&#39;dog&#39;, &#39;b&#39;-&gt;&#39;cat&#39;</code>这样的形式记录就可以，但是在做题时只是考虑到了单向的不能重复，而没有考虑到<code>&#39;dog&#39;-&gt;&#39;a&#39;, &#39;cat&#39;-&gt;&#39;b&#39;</code>这样的也不能重复，亦即<code>&#39;abba&#39;-&gt;&#39;dog dog dog dog&#39;</code>这种形式的亦是错误的，以后还是要思虑周全一点才是。</p>
+<p>这里不想自己用c++实现string的split方法，就用java来解题了：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">wordPattern</span><span class="params">(String pattern, String str)</span> </span>&#123;</span><br><span class="line">        String[] strs = str.split(<span class="string">" "</span>);</span><br><span class="line">        <span class="keyword">if</span> (strs.length != pattern.length())</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">        Map&lt;String, String&gt; hash = <span class="keyword">new</span> HashMap&lt;String, String&gt;();</span><br><span class="line">        Map&lt;String, String&gt; set = <span class="keyword">new</span> HashMap&lt;String, String&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; strs.length; i++) &#123;</span><br><span class="line">            String tmp = pattern.substring(i, i + <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">if</span> (hash.get(tmp) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!hash.get(tmp).equals(strs[i]))</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (set.get(strs[i]) == <span class="keyword">null</span>) &#123;</span><br><span class="line">                     hash.put(tmp, strs[i]);</span><br><span class="line">                     set.put(strs[i], tmp);</span><br><span class="line">                &#125; <span class="keyword">else</span> </span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<blockquote>
+<p>Given a pattern and a string str, find if str follows the same pattern.</p>
+<p>Examples:</p>
+<ul>
+<li>pattern = “abba”, str ]]>
+    </summary>
+    
+      <category term="Hash Table" scheme="http://yutianx.info/tags/Hash-Table/"/>
+    
+      <category term="LeetCode" scheme="http://yutianx.info/categories/LeetCode/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[LeetCode: Ugly Number]]></title>
+    <link href="http://yutianx.info/2015/10/05/2015-10-05-leetcode-ugly-number/"/>
+    <id>http://yutianx.info/2015/10/05/2015-10-05-leetcode-ugly-number/</id>
+    <published>2015-10-05T14:09:20.000Z</published>
+    <updated>2015-10-07T14:12:12.000Z</updated>
+    <content type="html"><![CDATA[<blockquote>
+<p>Write a program to check whether a given number is an ugly number.</p>
+<p>Ugly numbers are positive numbers whose prime factors only include 2, 3, 5. For example, 6, 8 are ugly while 14 is not ugly since it includes another prime factor 7.</p>
+<p>Note that 1 is typically treated as an ugly number.</p>
+</blockquote>
+<p>数学题是最头疼的了，这题开始想到是用检查一个数是否为素数的方法，后面发现太麻烦，所以找到了以下的方法。希望以后不要遇到太多的数学题。。。好怕。。。</p>
+<p>根据丑数的定义，丑数只能被2、3和5整除。也就是说如果一个数如果它能被2整除，我们把它连续除以2；如果能被3整除，就连续除以3；如果能被5整除，就除以连续5。如果最后我们得到的是1，那么这个数就是丑数，否则不是。此处需要注意0这个问题。</p>
+<p>代码如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Solution &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isUgly</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (num == <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">while</span> (num % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            num /= <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (num % <span class="number">3</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            num /= <span class="number">3</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (num % <span class="number">5</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            num /= <span class="number">5</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> num == <span class="number">1</span> ? <span class="keyword">true</span> : <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<blockquote>
+<p>Write a program to check whether a given number is an ugly number.</p>
+<p>Ugly numbers are positive numbers whose prime fact]]>
+    </summary>
+    
+      <category term="Math" scheme="http://yutianx.info/tags/Math/"/>
+    
+      <category term="LeetCode" scheme="http://yutianx.info/categories/LeetCode/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[LeetCode: Implement Queue using Stacks]]></title>
+    <link href="http://yutianx.info/2015/10/04/2015-10-04-leetcode-implement-queue-using-stacks/"/>
+    <id>http://yutianx.info/2015/10/04/2015-10-04-leetcode-implement-queue-using-stacks/</id>
+    <published>2015-10-04T11:17:20.000Z</published>
+    <updated>2015-10-06T13:47:52.000Z</updated>
+    <content type="html"><![CDATA[<blockquote>
+<p>Implement the following operations of a queue using stacks.</p>
+<ul>
+<li>push(x) — Push element x to the back of queue.</li>
+<li>pop() — Removes the element from in front of queue.</li>
+<li>peek() — Get the front element.</li>
+<li>empty() — Return whether the queue is empty.</li>
+</ul>
+</blockquote>
+<p>主要是push的时候对整个栈进行了一个翻转，代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Queue &#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; s;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">// Push element x to the back of queue.</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; reverse;</span><br><span class="line">        <span class="keyword">while</span> (!s.empty()) &#123;</span><br><span class="line">            reverse.push(s.top());</span><br><span class="line">            s.pop();</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; tmp;</span><br><span class="line">        tmp.push(x);</span><br><span class="line">        <span class="keyword">while</span> (!reverse.empty()) &#123;</span><br><span class="line">            tmp.push(reverse.top());</span><br><span class="line">            reverse.pop();</span><br><span class="line">        &#125;</span><br><span class="line">        s = tmp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Removes the element from in front of queue.</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">pop</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!s.empty()) </span><br><span class="line">            s.pop();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get the front element.</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">peek</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.top();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Return whether the queue is empty.</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">empty</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> s.empty();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+]]></content>
+    <summary type="html">
+    <![CDATA[<blockquote>
+<p>Implement the following operations of a queue using stacks.</p>
+<ul>
+<li>push(x) — Push element x to the back of queue.</li>]]>
+    </summary>
+    
+      <category term="Stack" scheme="http://yutianx.info/tags/Stack/"/>
+    
+      <category term="LeetCode" scheme="http://yutianx.info/categories/LeetCode/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[LeetCode: Reverse Linked List]]></title>
+    <link href="http://yutianx.info/2015/10/04/2015-10-04-leetcode-reverse-linked-list/"/>
+    <id>http://yutianx.info/2015/10/04/2015-10-04-leetcode-reverse-linked-list/</id>
+    <published>2015-10-04T10:50:20.000Z</published>
+    <updated>2015-10-06T13:47:40.000Z</updated>
+    <content type="html"><![CDATA[<blockquote>
+<p>Reverse a singly linked list.</p>
+</blockquote>
+<p>思路还是很简单的，有三个节点的临时变量就可以了，主要是代码要写得精炼。</p>
+<p>代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line"> * Definition for singly-linked list.</span><br><span class="line"> * struct ListNode &#123;</span><br><span class="line"> *     int val;</span><br><span class="line"> *     ListNode *next;</span><br><span class="line"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span><br><span class="line"> * &#125;;</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">class</span> Solution &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ListNode* reverseList(ListNode* head) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!head) <span class="keyword">return</span> NULL;</span><br><span class="line">        ListNode *cur = head, *pre = NULL;</span><br><span class="line">        <span class="keyword">while</span> (cur) &#123;</span><br><span class="line">            ListNode *tmp = cur-&gt;next;</span><br><span class="line">            cur-&gt;next =  pre;</span><br><span class="line">            pre = cur;</span><br><span class="line">            cur = tmp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pre;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+]]></content>
+    <summary type="html">
+    <![CDATA[<blockquote>
+<p>Reverse a singly linked list.</p>
+</blockquote>
+<p>思路还是很简单的，有三个节点的临时变量就可以了，主要是代码要写得精炼。</p>
+<p>代码如下：</p>
+<figure class="highl]]>
+    </summary>
+    
+      <category term="Linked List" scheme="http://yutianx.info/tags/Linked-List/"/>
+    
+      <category term="LeetCode" scheme="http://yutianx.info/categories/LeetCode/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[LeetCode: Lowest Common Ancestor of a Binary Tree]]></title>
     <link href="http://yutianx.info/2015/10/03/2015-10-03-leetcode-lowest-common-ancestor-of-a-binary-tree/"/>
     <id>http://yutianx.info/2015/10/03/2015-10-03-leetcode-lowest-common-ancestor-of-a-binary-tree/</id>
     <published>2015-10-03T13:49:20.000Z</published>
-    <updated>2015-10-03T16:22:43.000Z</updated>
+    <updated>2015-10-06T13:50:00.000Z</updated>
     <content type="html"><![CDATA[<blockquote>
 <p>Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.</p>
 </blockquote>
@@ -34,6 +237,8 @@
 <p>想法还是很简单，如果要判]]>
     </summary>
     
+      <category term="Tree" scheme="http://yutianx.info/tags/Tree/"/>
+    
       <category term="LeetCode" scheme="http://yutianx.info/categories/LeetCode/"/>
     
   </entry>
@@ -43,7 +248,7 @@
     <link href="http://yutianx.info/2015/09/30/2015-09-30-leetcode-add-digits/"/>
     <id>http://yutianx.info/2015/09/30/2015-09-30-leetcode-add-digits/</id>
     <published>2015-09-30T13:49:20.000Z</published>
-    <updated>2015-10-03T16:26:02.000Z</updated>
+    <updated>2015-10-06T13:53:04.000Z</updated>
     <content type="html"><![CDATA[<blockquote>
 <p>Given a non-negative integer num, repeatedly add all its digits until the result has only one digit.</p>
 <p>For example:</p>
@@ -63,6 +268,8 @@
 <p>Given a non-negative integer num, repeatedly add all its digits until the result has only one digit.</p>
 <p>For example:</p>]]>
     </summary>
+    
+      <category term="Math" scheme="http://yutianx.info/tags/Math/"/>
     
       <category term="LeetCode" scheme="http://yutianx.info/categories/LeetCode/"/>
     
@@ -483,174 +690,6 @@ schedule(<span class="keyword">void</span>)
       <category term="动态规划" scheme="http://yutianx.info/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"/>
     
       <category term="problems" scheme="http://yutianx.info/categories/problems/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[动态规划: Dungeon Game]]></title>
-    <link href="http://yutianx.info/2015/04/10/2015-04-10-leetcode-Dungeon-Game/"/>
-    <id>http://yutianx.info/2015/04/10/2015-04-10-leetcode-Dungeon-Game/</id>
-    <published>2015-04-10T06:47:20.000Z</published>
-    <updated>2015-05-04T13:41:15.000Z</updated>
-    <content type="html"><![CDATA[<blockquote>
-<p>The demons had captured the princess (P) and imprisoned her in the bottom-right corner of a dungeon. The dungeon consists of M x N rooms laid out in a 2D grid. Our valiant knight (K) was initially positioned in the top-left room and must fight his way through the dungeon to rescue the princess.</p>
-<p>The knight has an initial health point represented by a positive integer. If at any point his health point drops to 0 or below, he dies immediately.</p>
-<p>Some of the rooms are guarded by demons, so the knight loses health (negative integers) upon entering these rooms; other rooms are either empty (0’s) or contain magic orbs that increase the knight’s health (positive integers).</p>
-<p>In order to reach the princess as quickly as possible, the knight decides to move only rightward or downward in each step.</p>
-</blockquote>
-<p><a href="https://leetcode.com/problems/dungeon-game/" target="_blank" rel="external">原题链接</a></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line">    这道题和以前求最短路径的题有点相似，但是又不是求最短路径，因为要时刻保持英雄血量为正</span><br><span class="line"></span><br><span class="line">    但是我们还是可以使用动态规划来解决，我们约定一个数组dp[rows][cols]，其中</span><br><span class="line">    dp[i][j]表示进来(i, j)之前所需要的最少血量，则我们要求的结果就是dp[0][0]</span><br><span class="line"></span><br><span class="line">    那么我们可以得到一个递归式：</span><br><span class="line">    dp[i][j] = min(max(1, dp[i+1][j] - dungeon[i][j], max(1, dp[i][j+1] - dungeon[i][j])))</span><br><span class="line">    </span><br><span class="line">    可以这么理解，英雄进来（i, j）室后，有两条路出去，那么他出去之后所需的血量是接下来需要进入的</span><br><span class="line">    密室所需要的最低血量，即dp[i+1][j]和dp[i][j+1],那么他进来这个密室之前所需要的最低血量是多少</span><br><span class="line">    呢，那就很容易知道了，我们肯定选择一个出去时所需血量最少的，这样进来之前所需要的血量也是最少，</span><br><span class="line">    但是，需要注意的是，英雄的血量必须时刻保持为正，所以我们取max(1, exit_HP - dungeon[i][j])</span><br><span class="line"></span><br><span class="line">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Solution &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">calculateMinimumHP</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; &gt; &amp;dungeon)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> rows = dungeon.size();</span><br><span class="line">        <span class="keyword">int</span> cols = rows &gt; <span class="number">0</span> ? dungeon[<span class="number">0</span>].size() : <span class="number">0</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; dp(cols, INT_MAX);</span><br><span class="line">        dp[cols - <span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = rows - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">            dp[cols - <span class="number">1</span>] = max(<span class="number">1</span>, dp[cols - <span class="number">1</span>] - dungeon[i][cols - <span class="number">1</span>]);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = cols - <span class="number">2</span>; j &gt;= <span class="number">0</span>; j--) &#123;</span><br><span class="line">                dp[j] = max(<span class="number">1</span>, min(dp[j], dp[j + <span class="number">1</span>]) - dungeon[i][j]);</span><br><span class="line">            &#125;          </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
-    <summary type="html">
-    <![CDATA[<blockquote>
-<p>The demons had captured the princess (P) and imprisoned her in the bottom-right corner of a dungeon. The dungeon consists of]]>
-    </summary>
-    
-      <category term="动态规划" scheme="http://yutianx.info/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"/>
-    
-      <category term="problems" scheme="http://yutianx.info/categories/problems/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[golang中的sync]]></title>
-    <link href="http://yutianx.info/2015/03/11/2015-03-11-go-sync/"/>
-    <id>http://yutianx.info/2015/03/11/2015-03-11-go-sync/</id>
-    <published>2015-03-11T05:11:20.000Z</published>
-    <updated>2015-04-30T13:12:40.000Z</updated>
-    <content type="html"><![CDATA[<p>在golang中使用并发时，除了使用channel用来同步以外，还可以使用sync包来实现。</p>
-<p>sync包中的WaitGroup实现了一个类似任务队列的结构，你可以向队列中加入任务，任务完成后就把任务从队列中移除，如果队列中的任务没有全部完成，队列就会触发阻塞以阻止程序继续运行。</p>
-<p>这种情况就适用于各个goroutine之间不需要交换什么数据，只是完成一些相互独立的功能。例如写一个爬虫，爬曲各个不同页面，就可以使用sync。</p>
-<p>下面是golang官网的代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line"><span class="keyword">var</span> urls = []<span class="typename">string</span>&#123;</span><br><span class="line">        <span class="string">"http://www.golang.org/"</span>,</span><br><span class="line">        <span class="string">"http://www.google.com/"</span>,</span><br><span class="line">        <span class="string">"http://www.somestupidname.com/"</span>,</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">for</span> _, url := <span class="keyword">range</span> urls &#123;</span><br><span class="line">        <span class="comment">// Increment the WaitGroup counter.</span></span><br><span class="line">        wg.Add(<span class="number">1</span>)</span><br><span class="line">        <span class="comment">// Launch a goroutine to fetch the URL.</span></span><br><span class="line">        <span class="keyword">go</span> <span class="keyword">func</span>(url <span class="typename">string</span>) &#123;</span><br><span class="line">                <span class="comment">// Decrement the counter when the goroutine completes.</span></span><br><span class="line">                <span class="keyword">defer</span> wg.Done()</span><br><span class="line">                <span class="comment">// Fetch the URL.</span></span><br><span class="line">                http.Get(url)</span><br><span class="line">        &#125;(url)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Wait for all HTTP fetches to complete.</span></span><br><span class="line">wg.Wait()</span><br></pre></td></tr></table></figure>]]></content>
-    <summary type="html">
-    <![CDATA[<p>在golang中使用并发时，除了使用channel用来同步以外，还可以使用sync包来实现。</p>
-<p>sync包中的WaitGroup实现了一个类似任务队列的结构，你可以向队列中加入任务，任务完成后就把任务从队列中移除，如果队列中的任务没有全部完成，队列就会触发阻塞以]]>
-    </summary>
-    
-      <category term="golang" scheme="http://yutianx.info/categories/golang/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[c++中fill与fill_n函数]]></title>
-    <link href="http://yutianx.info/2015/01/29/2015-01-29-cpp-fill/"/>
-    <id>http://yutianx.info/2015/01/29/2015-01-29-cpp-fill/</id>
-    <published>2015-01-29T12:01:20.000Z</published>
-    <updated>2015-04-30T13:11:23.000Z</updated>
-    <content type="html"><![CDATA[<h3 id="fill函数">fill函数</h3><p>fill函数的作用是：将一个区间的元素都赋予val值。函数参数：fill(first,last,val);//first为容器的首迭代器，last为容器的末迭代器，val为将要替换的值。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fill algorithm example</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt;     <span class="comment">// std::cout</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;algorithm&gt;    <span class="comment">// std::fill</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;vector&gt;       <span class="comment">// std::vector</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; myvector (<span class="number">8</span>);                       <span class="comment">// myvector: 0 0 0 0 0 0 0 0</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::fill (myvector.begin(),myvector.begin()+<span class="number">4</span>,<span class="number">5</span>);   <span class="comment">// myvector: 5 5 5 5 0 0 0 0</span></span><br><span class="line">  <span class="built_in">std</span>::fill (myvector.begin()+<span class="number">3</span>,myvector.end()-<span class="number">2</span>,<span class="number">8</span>);   <span class="comment">// myvector: 5 5 5 8 8 8 0 0</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"myvector contains:"</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;::iterator it=myvector.begin(); it!=myvector.end(); ++it)</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">' '</span> &lt;&lt; *it;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="fill_n函数">fill_n函数</h3><p>fill_n函数的作用是：给你一个起始点，然后再给你一个数值count和val。把从起始点开始依次赋予count个元素val的值。</p>
-<p>与fill函数的区别就是fill_n直接指定元素的个数，fill只是指定一个区间</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// fill_n example</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt;     <span class="comment">// std::cout</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;algorithm&gt;    <span class="comment">// std::fill_n</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;vector&gt;       <span class="comment">// std::vector</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; myvector (<span class="number">8</span>,<span class="number">10</span>);        <span class="comment">// myvector: 10 10 10 10 10 10 10 10</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::fill_n (myvector.begin(),<span class="number">4</span>,<span class="number">20</span>);     <span class="comment">// myvector: 20 20 20 20 10 10 10 10</span></span><br><span class="line">  <span class="built_in">std</span>::fill_n (myvector.begin()+<span class="number">3</span>,<span class="number">3</span>,<span class="number">33</span>);   <span class="comment">// myvector: 20 20 20 33 33 33 10 10</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"myvector contains:"</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;::iterator it=myvector.begin(); it!=myvector.end(); ++it)</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">' '</span> &lt;&lt; *it;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-    <summary type="html">
-    <![CDATA[<h3 id="fill函数">fill函数</h3><p>fill函数的作用是：将一个区间的元素都赋予val值。函数参数：fill(first,last,val);//first为容器的首迭代器，last为容器的末迭代器，val为将要替换的值。</p>
-<figure clas]]>
-    </summary>
-    
-      <category term="cpp" scheme="http://yutianx.info/categories/cpp/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[常量指针和指针常量]]></title>
-    <link href="http://yutianx.info/2014/11/30/2014-11-30-c-constant-pointer/"/>
-    <id>http://yutianx.info/2014/11/30/2014-11-30-c-constant-pointer/</id>
-    <published>2014-11-30T06:41:20.000Z</published>
-    <updated>2015-04-30T13:11:07.000Z</updated>
-    <content type="html"><![CDATA[<h3 id="常量指针">常量指针</h3><p>常量指针是说指针所指向的内容是常量。</p>
-<p>比如:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> a[<span class="number">10</span>] = <span class="string">"hello"</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *p = a;</span><br><span class="line">*p = <span class="string">'a'</span>; <span class="comment">//这样是不行的，因为申明的是一个常量指针</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="指针常量">指针常量</h3><p>指针常量说的是指针是一个常量，不能够更改指针的值。</p>
-<p>比如：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> a[<span class="number">10</span>] = <span class="string">"hello"</span>;</span><br><span class="line"><span class="keyword">char</span> b[<span class="number">10</span>] = <span class="string">"world"</span>;</span><br><span class="line"><span class="keyword">char</span> * <span class="keyword">const</span> p = &amp;a;</span><br><span class="line">p = &amp;b; <span class="comment">//这样是不行的，因为申明的是一个指针常量</span></span><br></pre></td></tr></table></figure></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<h3 id="常量指针">常量指针</h3><p>常量指针是说指针所指向的内容是常量。</p>
-<p>比如:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="lin]]>
-    </summary>
-    
-      <category term="cpp" scheme="http://yutianx.info/categories/cpp/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[动态规划: Maximum Product Subarray]]></title>
-    <link href="http://yutianx.info/2014/11/26/2014-11-26-leetcode-maximum-product-subarray/"/>
-    <id>http://yutianx.info/2014/11/26/2014-11-26-leetcode-maximum-product-subarray/</id>
-    <published>2014-11-26T13:45:20.000Z</published>
-    <updated>2015-05-04T13:41:38.000Z</updated>
-    <content type="html"><![CDATA[<blockquote>
-<p>Find the contiguous subarray within an array (containing at least one number) which has the largest product.</p>
-<p>For example, given the array <code>[2,3,-2,4]</code>,</p>
-<p>the contiguous subarray <code>[2,3]</code> has the largest product = <code>6</code>.</p>
-</blockquote>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line"></span><br><span class="line">f(k) = Largest product subarray, from index 0 up to k, but must multiply A[k].</span><br><span class="line">g(k) = Smallest product subarray, from index 0 up to k, but must multiply A[k].</span><br><span class="line"></span><br><span class="line">在f(k)和g(k)中，</span><br><span class="line">f(k)是指从0~k,最后乘以A[k]的最大值，</span><br><span class="line">g(k)是指从0~k,最后乘以A[k]的最小值.</span><br><span class="line">所以这也是为什么f(k)，g(k)并不是全局的最大值和最小值，之所以一定要乘上A[k]，是因为</span><br><span class="line">求的是连续的范围，只有这样，才能够往下继续遍历。</span><br><span class="line"></span><br><span class="line">f(k) = max( f(k-1) * A[k], A[k], g(k-1) * A[k] )</span><br><span class="line">g(k) = min( g(k-1) * A[k], A[k], f(k-1) * A[k] )</span><br><span class="line"></span><br><span class="line">在递推公式中，如果f(k)为A[k]，表示从k重新开始。</span><br><span class="line">比如&#123;2,3,-2,4&#125;，k=2时，f(k)=-2,表示从-2处重新开始计算最大值。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">*/</span></span><br><span class="line"><span class="keyword">class</span> Solution &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxProduct</span><span class="params">(<span class="keyword">int</span> A[], <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> min_tmp = A[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">int</span> max_tmp = A[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">int</span> result = max_tmp;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> a = min_tmp * A[i];</span><br><span class="line">            <span class="keyword">int</span> b = max_tmp * A[i];</span><br><span class="line">            min_tmp = min(min(a, b), A[i]);</span><br><span class="line">            max_tmp = max(max(a, b), A[i]);</span><br><span class="line">            result = max(result, max_tmp);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-]]></content>
-    <summary type="html">
-    <![CDATA[<blockquote>
-<p>Find the contiguous subarray within an array (containing at least one number) which has the largest product.</p>
-<p>For exam]]>
-    </summary>
-    
-      <category term="动态规划" scheme="http://yutianx.info/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/"/>
-    
-      <category term="problems" scheme="http://yutianx.info/categories/problems/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[STL:iterator的一些常见操作]]></title>
-    <link href="http://yutianx.info/2014/11/25/2014-11-25-stl-iterator/"/>
-    <id>http://yutianx.info/2014/11/25/2014-11-25-stl-iterator/</id>
-    <published>2014-11-25T02:20:20.000Z</published>
-    <updated>2015-04-30T13:16:04.000Z</updated>
-    <content type="html"><![CDATA[<p>有时在做题时，碰到vector之类的容器时，如果我要制定一个容器的范围，那么我就不得不声明三个形参，一个vector，两个下标。但是在这里我们还可以实用迭代器来实现，这样，就只需要实用两个形参就可以了。</p>
-<p>iterator在实际题目中的使用见重建二叉树部分。</p>
-<p>下面，举出一些iterator的常用函数：</p>
-<ul>
-<li>begin(), end()</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt;     <span class="comment">// std::cout</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;vector&gt;       <span class="comment">// std::vector, std::begin, std::end</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> foo[] = &#123;a&#125;;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; bar;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// iterate foo: inserting into bar</span></span><br><span class="line">  <span class="comment">//数组也可以使用</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> it = <span class="built_in">std</span>::begin(foo); it!=<span class="built_in">std</span>::end(foo); ++it)</span><br><span class="line">    bar.push_back(*it);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// iterate bar: print contents:</span></span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"bar contains:"</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">auto</span> it = <span class="built_in">std</span>::begin(bar); it!=<span class="built_in">std</span>::end(bar); ++it)</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">' '</span> &lt;&lt; *it;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>distance()</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// advance example</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt;     <span class="comment">// std::cout</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iterator&gt;     <span class="comment">// std::distance</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;list&gt;         <span class="comment">// std::list</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="keyword">int</span>&gt; mylist;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++) mylist.push_back (i*<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="keyword">int</span>&gt;::iterator first = mylist.begin();</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="keyword">int</span>&gt;::iterator last = mylist.end();</span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"The distance is: "</span> &lt;&lt; <span class="built_in">std</span>::distance(first,last) &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>next()</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// next example</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt;     <span class="comment">// std::cout</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iterator&gt;     <span class="comment">// std::next</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;list&gt;         <span class="comment">// std::list</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;algorithm&gt;    <span class="comment">// std::for_each</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="keyword">int</span>&gt; mylist;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++) mylist.push_back (i*<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"mylist:"</span>;</span><br><span class="line">  <span class="built_in">std</span>::for_each (mylist.begin(),</span><br><span class="line">                 <span class="built_in">std</span>::next(mylist.begin(),<span class="number">5</span>),</span><br><span class="line">                 [](<span class="keyword">int</span> x) &#123;<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">' '</span> &lt;&lt; x;&#125; );</span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>pre()</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// prev example</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt;     <span class="comment">// std::cout</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iterator&gt;     <span class="comment">// std::next</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;list&gt;         <span class="comment">// std::list</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;algorithm&gt;    <span class="comment">// std::for_each</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="keyword">int</span>&gt; mylist;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++) mylist.push_back (i*<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"The last element is "</span> &lt;&lt; *<span class="built_in">std</span>::prev(mylist.end()) &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>reverse_iterator()</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// reverse_iterator example</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt;     <span class="comment">// std::cout</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iterator&gt;     <span class="comment">// std::reverse_iterator</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;vector&gt;       <span class="comment">// std::vector</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; myvector;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++) myvector.push_back(i);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">typedef</span> <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;::iterator iter_type;</span><br><span class="line">                                                         <span class="comment">// ? 0 1 2 3 4 5 6 7 8 9 ?</span></span><br><span class="line">  <span class="function">iter_type <span class="title">from</span> <span class="params">(myvector.begin()</span>)</span>;                     <span class="comment">//   ^</span></span><br><span class="line">                                                         <span class="comment">//         ------&gt;</span></span><br><span class="line">  <span class="function">iter_type <span class="title">until</span> <span class="params">(myvector.end()</span>)</span>;                      <span class="comment">//                       ^</span></span><br><span class="line">                                                         <span class="comment">//</span></span><br><span class="line">  <span class="built_in">std</span>::reverse_iterator&lt;iter_type&gt; rev_until (from);     <span class="comment">// ^</span></span><br><span class="line">                                                         <span class="comment">//         &lt;------</span></span><br><span class="line">  <span class="built_in">std</span>::reverse_iterator&lt;iter_type&gt; rev_from (until);     <span class="comment">//                     ^</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"myvector:"</span>;</span><br><span class="line">  <span class="keyword">while</span> (rev_from != rev_until)</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">' '</span> &lt;&lt; *rev_from++;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>有时在做题时，碰到vector之类的容器时，如果我要制定一个容器的范围，那么我就不得不声明三个形参，一个vector，两个下标。但是在这里我们还可以实用迭代器来实现，这样，就只需要实用两个形参就可以了。</p>
-<p>iterator在实际题目中的使用见重建二叉树部分。</]]>
-    </summary>
-    
-      <category term="cpp" scheme="http://yutianx.info/categories/cpp/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[STL: upper_bound & lower_bound]]></title>
-    <link href="http://yutianx.info/2014/11/23/2014-11-23-upper-bound-lower-bound/"/>
-    <id>http://yutianx.info/2014/11/23/2014-11-23-upper-bound-lower-bound/</id>
-    <published>2014-11-23T03:39:20.000Z</published>
-    <updated>2015-05-04T13:54:41.000Z</updated>
-    <content type="html"><![CDATA[<p>有时候，我们用到二分搜索的时候需要求出大于等于一个数的最小值和小于等于一个数的最大值，这个时候我们除了自己写出二分搜索的代码外，还可以使用这两个函数。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lower_bound/upper_bound example</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt;     <span class="comment">// std::cout</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;algorithm&gt;    <span class="comment">// std::lower_bound, std::upper_bound, std::sort</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;vector&gt;       <span class="comment">// std::vector</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> myints[] = &#123;<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>,<span class="number">30</span>,<span class="number">20</span>,<span class="number">10</span>,<span class="number">10</span>,<span class="number">20</span>&#125;;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; v(myints,myints+<span class="number">8</span>);           <span class="comment">// 10 20 30 30 20 10 10 20</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::sort (v.begin(), v.end());                <span class="comment">// 10 10 10 20 20 20 30 30</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;::iterator low,up;</span><br><span class="line">  low=<span class="built_in">std</span>::lower_bound (v.begin(), v.end(), <span class="number">20</span>); <span class="comment">//          ^</span></span><br><span class="line">  up= <span class="built_in">std</span>::upper_bound (v.begin(), v.end(), <span class="number">20</span>); <span class="comment">//                   ^</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"lower_bound at position "</span> &lt;&lt; (low- v.begin()) &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"upper_bound at position "</span> &lt;&lt; (up - v.begin()) &lt;&lt; <span class="string">'\n'</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-    <summary type="html">
-    <![CDATA[<p>有时候，我们用到二分搜索的时候需要求出大于等于一个数的最小值和小于等于一个数的最大值，这个时候我们除了自己写出二分搜索的代码外，还可以使用这两个函数。</p>
-<figure class="highlight cpp"><table><tr><td class="gutte]]>
-    </summary>
-    
-      <category term="二分搜索" scheme="http://yutianx.info/tags/%E4%BA%8C%E5%88%86%E6%90%9C%E7%B4%A2/"/>
-    
-      <category term="cpp" scheme="http://yutianx.info/categories/cpp/"/>
     
   </entry>
   

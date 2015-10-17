@@ -3,6 +3,7 @@ layout: post
 title:  "LeetCode: Add Digits"
 categories: LeetCode
 date:   2015-09-30 21:49:20
+tags: ["Math"]
 ---
 
 > Given a non-negative integer num, repeatedly add all its digits until the result has only one digit.

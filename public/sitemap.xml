@@ -2,13 +2,48 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yutianx.info/2015/10/17/2015-10-17-leetcode-product-of-array-except-self/</loc>
+    <lastmod>2015-10-17T04:06:29.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yutianx.info/2015/10/08/2015-10-08-leetcode-remove-linked-list-elements/</loc>
+    <lastmod>2015-10-08T05:44:42.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yutianx.info/2015/10/07/2015-10-07-leetcode-rectangle-area/</loc>
+    <lastmod>2015-10-07T14:13:10.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yutianx.info/2015/10/06/2015-10-06-leetcode-word-pattern/</loc>
+    <lastmod>2015-10-07T14:12:18.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yutianx.info/2015/10/05/2015-10-05-leetcode-ugly-number/</loc>
+    <lastmod>2015-10-07T14:12:12.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://yutianx.info/2015/09/30/2015-09-30-leetcode-add-digits/</loc>
-    <lastmod>2015-10-03T16:26:02.000Z</lastmod>
+    <lastmod>2015-10-06T13:53:04.000Z</lastmod>
   </url>
   
   <url>
     <loc>http://yutianx.info/2015/10/03/2015-10-03-leetcode-lowest-common-ancestor-of-a-binary-tree/</loc>
-    <lastmod>2015-10-03T16:22:43.000Z</lastmod>
+    <lastmod>2015-10-06T13:50:00.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yutianx.info/2015/10/04/2015-10-04-leetcode-implement-queue-using-stacks/</loc>
+    <lastmod>2015-10-06T13:47:52.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://yutianx.info/2015/10/04/2015-10-04-leetcode-reverse-linked-list/</loc>
+    <lastmod>2015-10-06T13:47:40.000Z</lastmod>
   </url>
   
   <url>
